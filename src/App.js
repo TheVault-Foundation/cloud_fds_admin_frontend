@@ -13,11 +13,20 @@ import "./App.css";
 //   return import("./containers/ServerRepair/Loadable");
 // });
 
+const HomePage = asyncComponent(() => {
+  return import("./containers/HomePage/Loadable");
+});
+
+const LoginPage = asyncComponent(() => {
+  return import("./containers/LoginPage/Loadable");
+});
+
 class App extends Component {
   render() {
     let routes = (
       <Switch>
-        <Route exact path="/" component={null} />
+        <Route exact path="/" component={HomePage} />
+        <Route path="/login" component={LoginPage} />
         <Redirect to="/" />
       </Switch>
     );
