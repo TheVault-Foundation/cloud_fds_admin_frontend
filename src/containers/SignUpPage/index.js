@@ -4,31 +4,14 @@ import { withRouter } from "react-router-dom";
 import { withNamespaces } from "react-i18next";
 import i18n from "i18next";
 import { compose } from "recompose";
+import { Formik } from "formik";
 
-// nodejs library that concatenates classes
-import classnames from "classnames";
-// reactstrap components
-import {
-  Button,
-  Card,
-  CardHeader,
-  CardBody,
-  FormGroup,
-  Form,
-  Input,
-  InputGroupAddon,
-  InputGroupText,
-  InputGroup,
-  Container,
-  Row,
-  Col
-} from "reactstrap";
-import AuthHeader from "components/Headers/AuthHeader.jsx";
-import ReCAPTCHA from "react-google-recaptcha";
+import RegisterPage from "../../components/RegisterPage";
 
-const siteKey = process.env.RECAPTCHA_SITE_KEY || "6LePkrgUAAAAAEaSfflZjl-UoDKATwlzaPaLIbug";
+const siteKey =
+  process.env.RECAPTCHA_SITE_KEY || "6LePkrgUAAAAAEaSfflZjl-UoDKATwlzaPaLIbug";
 
-class SignUpPage extends Component {
+class SignUpPageContainer extends Component {
   state = {};
 
   componentDidMount() {
@@ -48,137 +31,48 @@ class SignUpPage extends Component {
     const { t } = this.props;
 
     return (
-      <>
-        <AuthHeader
-          title="TheVault Foundation"
-          lead={t("create-new-account")}
-        />
-        <Container className="mt--8 pb-5">
-          <Row className="justify-content-center">
-            <Col lg="6" md="8">
-              <Card className="bg-secondary border-0">
-                <CardBody className="px-lg-5 py-lg-5">
-                  <div className="text-center text-muted mb-4">
-                    <small>Sign up with credentials</small>
-                  </div>
-                  <Form role="form">
-                    <FormGroup
-                      className={classnames({
-                        focused: this.state.focusedName
-                      })}
-                    >
-                      <InputGroup className="input-group-merge input-group-alternative mb-3">
-                        <InputGroupAddon addonType="prepend">
-                          <InputGroupText>
-                            <i className="ni ni-hat-3" />
-                          </InputGroupText>
-                        </InputGroupAddon>
-                        <Input
-                          placeholder={t("name")}
-                          type="text"
-                          onFocus={() =>
-                            this.setState({ focusedName: true })
-                          }
-                          onBlur={() =>
-                            this.setState({ focusedName: false })
-                          }
-                        />
-                      </InputGroup>
-                    </FormGroup>
-                    <FormGroup
-                      className={classnames({
-                        focused: this.state.focusedEmail
-                      })}
-                    >
-                      <InputGroup className="input-group-merge input-group-alternative mb-3">
-                        <InputGroupAddon addonType="prepend">
-                          <InputGroupText>
-                            <i className="ni ni-email-83" />
-                          </InputGroupText>
-                        </InputGroupAddon>
-                        <Input
-                          placeholder={t("email")}
-                          type="email"
-                          onFocus={() =>
-                            this.setState({ focusedEmail: true })
-                          }
-                          onBlur={() =>
-                            this.setState({ focusedEmail: false })
-                          }
-                        />
-                      </InputGroup>
-                    </FormGroup>
-                    <FormGroup
-                      className={classnames({
-                        focused: this.state.focusedPassword
-                      })}
-                    >
-                      <InputGroup className="input-group-merge input-group-alternative">
-                        <InputGroupAddon addonType="prepend">
-                          <InputGroupText>
-                            <i className="ni ni-lock-circle-open" />
-                          </InputGroupText>
-                        </InputGroupAddon>
-                        <Input
-                          placeholder={t("password")}
-                          type="password"
-                          onFocus={() =>
-                            this.setState({ focusedPassword: true })
-                          }
-                          onBlur={() =>
-                            this.setState({ focusedPassword: false })
-                          }
-                        />
-                      </InputGroup>
-                    </FormGroup>
-                    <Row className="my-4">
-                      <Col xs="12">
-                        <div className="custom-control custom-control-alternative custom-checkbox">
-                          <input
-                            className="custom-control-input"
-                            id="customCheckRegister"
-                            type="checkbox"
-                          />
-                          <label
-                            className="custom-control-label"
-                            htmlFor="customCheckRegister"
-                          >
-                            <span className="text-muted">
-                              {t("toc-1")}{" "}
-                              <a
-                                href="#pablo"
-                                onClick={e => e.preventDefault()}
-                              >
-                                {t("toc-2")}
-                              </a>
-                            </span>
-                          </label>
-                        </div>
-                      </Col>
-                    </Row>
-                    <div className="text-center text-muted mb-4">
-                      <ReCAPTCHA
-                        style={{ display: "inline-block" }}
-                        className="mt-4"
-                        ref={el => {
-                          this.recaptcha = el;
-                        }}
-                        sitekey={siteKey}
-                        onChange={this.handleCaptchaResponseChange}
-                      />
-                    </div>
-                    <div className="text-center">
-                      <Button className="mt-4" color="info" type="button">
-                        {t("create-account")}
-                      </Button>
-                    </div>
-                  </Form>
-                </CardBody>
-              </Card>
-            </Col>
-          </Row>
-        </Container>
-      </>
+      <Formik
+        initialValues={{ name: "", email: "", password: "" }}
+        validateOnChange={false}
+        validateOnBlur={false}
+        validateOnSubmit
+        validate={values => {
+          let errors = {};
+          if (!values.name) {
+            errors.name = "Required";
+          }
+
+          if (!values.email) {
+            errors.email = "Required";
+          } else if (
+            !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(values.email)
+          ) {
+            errors.email = "Invalid email address";
+          }
+
+          if (!values.password) {
+            errors.password = "Required";
+          }
+
+          console.log(errors);
+          return errors;
+        }}
+        onSubmit={(values, { setSubmitting }) => {
+          setTimeout(() => {
+            alert(JSON.stringify(values, null, 2));
+            setSubmitting(false);
+          }, 1000);
+        }}
+      >
+        {formik => (
+          <RegisterPage
+            formik={formik}
+            t={t}
+            gCapchatSiteKey={siteKey}
+            handleCaptchaResponseChange={this.handleCaptchaResponseChange}
+          />
+        )}
+      </Formik>
     );
   }
 }
@@ -196,4 +90,4 @@ export default compose(
     mapStateToProps,
     {}
   )
-)(SignUpPage);
+)(SignUpPageContainer);
