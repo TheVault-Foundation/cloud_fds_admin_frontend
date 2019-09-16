@@ -39,7 +39,7 @@ class LoginPage extends Component {
       submitForm,
       values,
       setFieldValue
-    } = this.props.formik;
+    } = formik;
 
     console.log("errors", errors.email);
 
@@ -68,6 +68,7 @@ class LoginPage extends Component {
                         </InputGroupAddon>
                         <Input
                           invalid={errors.email ? true : false}
+                          disabled={isSubmitting}
                           placeholder="Email"
                           type="email"
                           name={"email"}
@@ -102,11 +103,10 @@ class LoginPage extends Component {
                           placeholder="Password"
                           type="password"
                           name={"password"}
+                          invalid={errors.email ? true : false}
+                          disabled={isSubmitting}
                           onChange={e => {
-                            setFieldValue(
-                              "password",
-                              e.target.value
-                            );
+                            setFieldValue("password", e.target.value);
                           }}
                           onFocus={() =>
                             this.setState({ focusedPassword: true })
@@ -156,6 +156,7 @@ class LoginPage extends Component {
                         color="info"
                         type="button"
                         onClick={submitForm}
+                        disabled={isSubmitting}
                       >
                         {t("sign-in")}
                       </Button>
