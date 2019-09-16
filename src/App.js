@@ -32,6 +32,10 @@ const LoginPage = asyncComponent(() => {
   return import("./containers/LoginPage/Loadable");
 });
 
+const SignUpPage = asyncComponent(() => {
+  return import("./containers/SignUpPage/Loadable");
+});
+
 class App extends Component {
 
   render() {
@@ -39,6 +43,7 @@ class App extends Component {
       <Switch>
         <Route exact path="/" component={HomePage} />
         <Route path="/login" component={LoginPage} />
+        <Route path="/signup" component={SignUpPage} />
         <Redirect to="/" />
       </Switch>
     );

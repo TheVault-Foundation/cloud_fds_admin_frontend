@@ -24,49 +24,72 @@ import {
   Col
 } from "reactstrap";
 import AuthHeader from "components/Headers/AuthHeader.jsx";
-class LoginPage extends Component {
+class SignUpPage extends Component {
   state = {};
 
   componentDidMount() {
     document.body.classList.add("bg-default");
+    this.props.history.push("/signup");
   }
 
   componentWillUnmount() {
     document.body.classList.remove("bg-default");
   }
 
-  goToSignUpPage = () => {
-    this.props.history.push("/signup");
-  };
-
   render() {
     const { t } = this.props;
 
     return (
       <>
-        <AuthHeader title="TheVault Foundation" lead="Admin dasboard" />
+        <AuthHeader
+          title="TheVault Foundation"
+          lead={t("create-new-account")}
+        />
         <Container className="mt--8 pb-5">
           <Row className="justify-content-center">
-            <Col lg="5" md="7">
-              <Card className="bg-secondary border-0 mb-0">
+            <Col lg="6" md="8">
+              <Card className="bg-secondary border-0">
                 <CardBody className="px-lg-5 py-lg-5">
                   <div className="text-center text-muted mb-4">
-                    <small>{t("login")}</small>
+                    <small>Sign up with credentials</small>
                   </div>
                   <Form role="form">
                     <FormGroup
-                      className={classnames("mb-3", {
+                      className={classnames({
+                        focused: this.state.focusedName
+                      })}
+                    >
+                      <InputGroup className="input-group-merge input-group-alternative mb-3">
+                        <InputGroupAddon addonType="prepend">
+                          <InputGroupText>
+                            <i className="ni ni-hat-3" />
+                          </InputGroupText>
+                        </InputGroupAddon>
+                        <Input
+                          placeholder={t("name")}
+                          type="text"
+                          onFocus={() =>
+                            this.setState({ focusedName: true })
+                          }
+                          onBlur={() =>
+                            this.setState({ focusedName: false })
+                          }
+                        />
+                      </InputGroup>
+                    </FormGroup>
+                    <FormGroup
+                      className={classnames({
                         focused: this.state.focusedEmail
                       })}
                     >
-                      <InputGroup className="input-group-merge input-group-alternative">
+                      <InputGroup className="input-group-merge input-group-alternative mb-3">
                         <InputGroupAddon addonType="prepend">
                           <InputGroupText>
                             <i className="ni ni-email-83" />
                           </InputGroupText>
                         </InputGroupAddon>
                         <Input
-                          placeholder="Email"
+                          placeholder={t("email")}
                           type="email"
                           onFocus={() =>
                             this.setState({ focusedEmail: true })
@@ -89,7 +112,7 @@ class LoginPage extends Component {
                           </InputGroupText>
                         </InputGroupAddon>
                         <Input
-                          placeholder="Password"
+                          placeholder={t("password")}
                           type="password"
                           onFocus={() =>
                             this.setState({ focusedPassword: true })
@@ -100,52 +123,39 @@ class LoginPage extends Component {
                         />
                       </InputGroup>
                     </FormGroup>
-                    <div className="custom-control custom-control-alternative custom-checkbox">
-                      <input
-                        className="custom-control-input"
-                        id=" customCheckLogin"
-                        type="checkbox"
-                      />
-                      <label
-                        className="custom-control-label"
-                        htmlFor=" customCheckLogin"
-                      >
-                        <span className="text-muted">
-                          {t("remember-me")}
-                        </span>
-                      </label>
-                    </div>
+                    <Row className="my-4">
+                      <Col xs="12">
+                        <div className="custom-control custom-control-alternative custom-checkbox">
+                          <input
+                            className="custom-control-input"
+                            id="customCheckRegister"
+                            type="checkbox"
+                          />
+                          <label
+                            className="custom-control-label"
+                            htmlFor="customCheckRegister"
+                          >
+                            <span className="text-muted">
+                              {t("toc-1")}{" "}
+                              <a
+                                href="#pablo"
+                                onClick={e => e.preventDefault()}
+                              >
+                                {t("toc-2")}
+                              </a>
+                            </span>
+                          </label>
+                        </div>
+                      </Col>
+                    </Row>
                     <div className="text-center">
-                      <Button className="my-4" color="info" type="button">
-                        {t("sign-in")}
+                      <Button className="mt-4" color="info" type="button">
+                        {t("create-account")}
                       </Button>
                     </div>
                   </Form>
                 </CardBody>
               </Card>
-              <Row className="mt-3">
-                <Col xs="6">
-                  <a
-                    className="text-light"
-                    href="#pablo"
-                    onClick={e => e.preventDefault()}
-                  >
-                    <small>{t("forgot-password")}</small>
-                  </a>
-                </Col>
-                <Col className="text-right" xs="6">
-                  <a
-                    className="text-light"
-                    href="#pablo"
-                    onClick={e => {
-                      e.preventDefault();
-                      this.goToSignUpPage();
-                    }}
-                  >
-                    <small>{t("create-new-account")}</small>
-                  </a>
-                </Col>
-              </Row>
             </Col>
           </Row>
         </Container>
@@ -161,10 +171,10 @@ const mapStateToProps = state => {
 };
 
 export default compose(
-  withNamespaces("login", { wait: true }),
+  withNamespaces("signup", { wait: true }),
   withRouter,
   connect(
     mapStateToProps,
     {}
   )
-)(LoginPage);
+)(SignUpPage);
