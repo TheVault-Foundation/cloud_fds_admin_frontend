@@ -166,22 +166,22 @@ class LoginPage extends Component {
               </Card>
               <Row className="mt-3">
                 <Col xs="6">
-                  <a
+                  <Button
+                    color="link"
                     className="text-light"
-                    href="#pablo"
                     onClick={onClickForgotPassword}
                   >
-                    <small>{t("forgot-password")}</small>
-                  </a>
+                    {t("forgot-password")}
+                  </Button>
                 </Col>
                 <Col className="text-right" xs="6">
-                  <a
+                  <Button
+                    color="link"
                     className="text-light"
-                    href="#pablo"
                     onClick={onClickCreateNewAccount}
                   >
-                    <small>{t("create-new-account")}</small>
-                  </a>
+                    {t("create-new-account")}
+                  </Button>
                 </Col>
               </Row>
             </Col>
