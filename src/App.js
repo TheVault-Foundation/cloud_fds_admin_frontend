@@ -33,13 +33,6 @@ const LoginPage = asyncComponent(() => {
 });
 
 class App extends Component {
-  
-  componentDidMount() {
-    document.body.classList.add("bg-default");
-  }
-  componentWillUnmount() {
-    document.body.classList.remove("bg-default");
-  }
 
   render() {
     let routes = (
