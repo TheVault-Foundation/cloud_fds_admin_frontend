@@ -5,7 +5,6 @@ import { withNamespaces } from "react-i18next";
 import { compose } from "recompose";
 import { Formik } from "formik";
 
-// nodejs library that concatenates classes
 import LoginPage from "../../components/LoginPage";
 
 const siteKey =
@@ -42,9 +41,7 @@ class LoginPageContainer extends Component {
     this.props.history.push("/signup");
   };
 
-  handleSubmit = (values, ...rest) => {
-    
-  };
+  handleSubmit = (values, ...rest) => {};
 
   render() {
     const { t } = this.props;
@@ -64,6 +61,11 @@ class LoginPageContainer extends Component {
           ) {
             errors.email = "Invalid email address";
           }
+
+          if (!values.password) {
+            errors.password = "Required";
+          }
+
           console.log(errors);
           return errors;
         }}
@@ -71,15 +73,15 @@ class LoginPageContainer extends Component {
           setTimeout(() => {
             alert(JSON.stringify(values, null, 2));
             setSubmitting(false);
-          }, 400);
+          }, 1000);
         }}
       >
         {formik => (
           <LoginPage
             formik={formik}
-            t={this.props.t}
+            t={t}
             gCapchatSiteKey={siteKey}
-            handleCaptchaResponseChange
+            handleCaptchaResponseChange={this.handleCaptchaResponseChange}
             onClickForgotPassword={this.onClickForgotPassword}
             onClickCreateNewAccount={this.onClickCreateNewAccount}
           />
