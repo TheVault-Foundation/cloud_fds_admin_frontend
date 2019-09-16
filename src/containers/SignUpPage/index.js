@@ -24,6 +24,10 @@ import {
   Col
 } from "reactstrap";
 import AuthHeader from "components/Headers/AuthHeader.jsx";
+import ReCAPTCHA from "react-google-recaptcha";
+
+const siteKey = process.env.RECAPTCHA_SITE_KEY || "6LePkrgUAAAAAEaSfflZjl-UoDKATwlzaPaLIbug";
+
 class SignUpPage extends Component {
   state = {};
 
@@ -35,6 +39,10 @@ class SignUpPage extends Component {
   componentWillUnmount() {
     document.body.classList.remove("bg-default");
   }
+
+  handleCaptchaResponseChange = response => {
+    console.log("ReCAPTCHA", response);
+  };
 
   render() {
     const { t } = this.props;
@@ -148,6 +156,17 @@ class SignUpPage extends Component {
                         </div>
                       </Col>
                     </Row>
+                    <div className="text-center text-muted mb-4">
+                      <ReCAPTCHA
+                        style={{ display: "inline-block" }}
+                        className="mt-4"
+                        ref={el => {
+                          this.recaptcha = el;
+                        }}
+                        sitekey={siteKey}
+                        onChange={this.handleCaptchaResponseChange}
+                      />
+                    </div>
                     <div className="text-center">
                       <Button className="mt-4" color="info" type="button">
                         {t("create-account")}
