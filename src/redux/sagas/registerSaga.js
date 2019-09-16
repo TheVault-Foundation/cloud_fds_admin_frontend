@@ -1,6 +1,6 @@
 import { call, put, takeLatest } from "redux-saga/effects";
 import * as types from "../actions/types";
-import { API } from "../../network/API";
+import API from "../../network/API";
 
 function* register(action) {
   let response = null;
