@@ -28,9 +28,12 @@ class LoginPage extends Component {
   state = {};
 
   componentDidMount() {
-    this.props.history.push("/login");
+    document.body.classList.add("bg-default");
   }
 
+  componentWillUnmount() {
+    document.body.classList.remove("bg-default");
+  }
   render() {
     const { t } = this.props;
 
