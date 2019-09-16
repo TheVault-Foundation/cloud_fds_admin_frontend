@@ -32,6 +32,8 @@ class LoginPage extends Component {
   }
 
   render() {
+    const { t } = this.props;
+
     return (
       <>
         <AuthHeader title="TheVault Foundation" lead="Admin dasboard" />
@@ -41,7 +43,7 @@ class LoginPage extends Component {
               <Card className="bg-secondary border-0 mb-0">
                 <CardBody className="px-lg-5 py-lg-5">
                   <div className="text-center text-muted mb-4">
-                    <small>Login</small>
+                    <small>{t("login")}</small>
                   </div>
                   <Form role="form">
                     <FormGroup
@@ -58,8 +60,12 @@ class LoginPage extends Component {
                         <Input
                           placeholder="Email"
                           type="email"
-                          onFocus={() => this.setState({ focusedEmail: true })}
-                          onBlur={() => this.setState({ focusedEmail: false })}
+                          onFocus={() =>
+                            this.setState({ focusedEmail: true })
+                          }
+                          onBlur={() =>
+                            this.setState({ focusedEmail: false })
+                          }
                         />
                       </InputGroup>
                     </FormGroup>
@@ -96,12 +102,14 @@ class LoginPage extends Component {
                         className="custom-control-label"
                         htmlFor=" customCheckLogin"
                       >
-                        <span className="text-muted">Remember me</span>
+                        <span className="text-muted">
+                          {t("remember-me")}
+                        </span>
                       </label>
                     </div>
                     <div className="text-center">
                       <Button className="my-4" color="info" type="button">
-                        Sign in
+                        {t("sign-in")}
                       </Button>
                     </div>
                   </Form>
@@ -114,7 +122,7 @@ class LoginPage extends Component {
                     href="#pablo"
                     onClick={e => e.preventDefault()}
                   >
-                    <small>Forgot password?</small>
+                    <small>{t("forgot-password")}</small>
                   </a>
                 </Col>
                 <Col className="text-right" xs="6">
@@ -123,7 +131,7 @@ class LoginPage extends Component {
                     href="#pablo"
                     onClick={e => e.preventDefault()}
                   >
-                    <small>Create new account</small>
+                    <small>{t("create-new-account")}</small>
                   </a>
                 </Col>
               </Row>
