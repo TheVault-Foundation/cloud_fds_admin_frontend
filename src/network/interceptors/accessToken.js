@@ -1,16 +1,21 @@
-import AccessTokenManager from "../../data/token/AccessTokenManager";
+import { store } from '../../redux/store';
+import { path } from 'ramda';
+
 
 const AccessTokenInterceptor = {
   addAccessToken: config => {
-    const accessToken = AccessTokenManager.getAccessToken();
+    const state = store.getState();
+    const accessToken = path(['auth', 'data', 'access_token'], state);
+
     if (accessToken) {
       const headers = {
         ...config.headers,
-        Authorization: accessToken,
+        Authorization: `Bearer ${accessToken}`,
         "Content-Type": "application/json"
       };
       config.headers = headers;
     }
+    console.log('addAccessToken', accessToken);
     return config;
   },
 
