@@ -153,6 +153,68 @@ class RegisterPage extends Component {
                         )}
                       </InputGroup>
                     </FormGroup>
+
+                    <FormGroup
+                      className={classnames({
+                        focused: this.state.focusedCompany
+                      })}
+                    >
+                      <InputGroup className="input-group-merge input-group-alternative mb-3">
+                        <InputGroupAddon addonType="prepend">
+                          <InputGroupText>
+                            <i className="fa fa-building" />
+                          </InputGroupText>
+                        </InputGroupAddon>
+                        <Input
+                          placeholder={t("company")}
+                          type="text"
+                          name={"company"}
+                          value={values["company"]}
+                          onChange={e => {
+                            setFieldValue("company", e.target.value);
+                          }}
+                          onFocus={() => this.setState({ focusedCompany: true })}
+                          onBlur={() => this.setState({ focusedCompany: false })}
+                          invalid={errors.company ? true : false}
+                          disabled={isSubmitting}
+                        />
+                        {errors.company && (
+                          <FormFeedback>{errors.company}</FormFeedback>
+                        )}
+                      </InputGroup>
+                    </FormGroup>
+
+
+                    <FormGroup
+                      className={classnames({
+                        focused: this.state.focusedAddress
+                      })}
+                    >
+                      <InputGroup className="input-group-merge input-group-alternative mb-3">
+                        <InputGroupAddon addonType="prepend">
+                          <InputGroupText>
+                            <i className="fa fa-address-book" />
+                          </InputGroupText>
+                        </InputGroupAddon>
+                        <Input
+                          placeholder={t("address")}
+                          type="text"
+                          name={"address"}
+                          value={values["address"]}
+                          onChange={e => {
+                            setFieldValue("address", e.target.value);
+                          }}
+                          onFocus={() => this.setState({ focusedAddress: true })}
+                          onBlur={() => this.setState({ focusedAddress: false })}
+                          invalid={errors.address ? true : false}
+                          disabled={isSubmitting}
+                        />
+                        {errors.address && (
+                          <FormFeedback>{errors.address}</FormFeedback>
+                        )}
+                      </InputGroup>
+                    </FormGroup>
+
                     <Row className="my-4">
                       <Col xs="12">
                         <div className="custom-control custom-control-alternative custom-checkbox">

@@ -4,6 +4,8 @@
     "name": "Name",
     "email": "Email",
     "password": "Password",
+    "company": "Company",
+    "address": "Address",
     "toc-1": "I agree with the",
     "toc-2": "Privacy Policy",
     "create-account": "Create account",
