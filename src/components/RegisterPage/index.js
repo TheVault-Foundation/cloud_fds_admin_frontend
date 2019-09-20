@@ -160,6 +160,10 @@ class RegisterPage extends Component {
                             className="custom-control-input"
                             id="customCheckRegister"
                             type="checkbox"
+                            checked={values["toc"]}
+                            onChange={e => {
+                              setFieldValue("toc", e.target.value);
+                            }}
                           />
                           <label
                             className="custom-control-label"
@@ -176,6 +180,14 @@ class RegisterPage extends Component {
                             </span>
                           </label>
                         </div>
+                        <Input
+                          invalid={errors.toc ? true : false}
+                          type="hidden"
+                          value={values["toc"]}
+                        />
+                        {errors.toc && (
+                          <FormFeedback>{errors.toc}</FormFeedback>
+                        )}
                       </Col>
                     </Row>
                     <div className="text-center text-muted mb-4">

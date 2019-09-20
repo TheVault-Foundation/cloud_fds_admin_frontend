@@ -34,7 +34,7 @@ class SignUpPageContainer extends Component {
 
     return (
       <Formik
-        initialValues={{ name: "", email: "", password: "" }}
+        initialValues={{ name: "", email: "", password: "", toc: false }}
         validateOnChange={false}
         validateOnBlur={false}
         validateOnSubmit
@@ -54,6 +54,10 @@ class SignUpPageContainer extends Component {
 
           if (!values.password) {
             errors.password = "Required";
+          }
+
+          if (!values.toc) {
+            errors.toc = "Required";
           }
 
           console.log(errors);
