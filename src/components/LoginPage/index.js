@@ -69,24 +69,24 @@ class LoginPage extends Component {
                       <InputGroup className="input-group-merge input-group-alternative">
                         <InputGroupAddon addonType="prepend">
                           <InputGroupText>
-                            <i className="ni ni-email-83" />
+                            <i className="fa fa-user" />
                           </InputGroupText>
                         </InputGroupAddon>
                         <Input
-                          invalid={errors.email ? true : false}
+                          invalid={errors.username ? true : false}
                           disabled={isSubmitting}
-                          placeholder="Email"
-                          type="email"
-                          name={"email"}
-                          value={values["email"]}
+                          placeholder="Username"
+                          type="username"
+                          name={"username"}
+                          value={values["username"]}
                           onChange={e => {
-                            setFieldValue("email", e.target.value);
+                            setFieldValue("username", e.target.value);
                           }}
                           onFocus={() => this.setState({ focusedEmail: true })}
                           onBlur={() => this.setState({ focusedEmail: false })}
                         />
-                        {errors.email && (
-                          <FormFeedback>{errors.email}</FormFeedback>
+                        {errors.username && (
+                          <FormFeedback>{errors.username}</FormFeedback>
                         )}
                       </InputGroup>
                     </FormGroup>
