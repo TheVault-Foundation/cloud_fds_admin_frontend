@@ -8,8 +8,11 @@ const BASE_URL = process.env.BASE_URL;
 
 const getInstance = env => {
   const instance = axios.create({
-    baseURL: BASE_URL,
-    timeout: 30000
+    baseURL: 'http://127.0.0.1:5000/v1/',
+    timeout: 30000,
+    validateStatus: function (status) {
+      return status >= 200 && status <= 503;
+  },
   });
 
   instance.interceptors.response.use(
