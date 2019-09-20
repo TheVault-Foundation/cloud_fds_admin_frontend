@@ -76,6 +76,10 @@ class LoginPageContainer extends Component {
             errors.password = "Required";
           }
 
+          if (!values.gCaptcha) {
+            errors.gCaptcha = "Required";
+          }
+
           console.log(errors);
           return errors;
         }}
@@ -86,7 +90,11 @@ class LoginPageContainer extends Component {
             setSubmitting(false);
 
             switch (response.status) {
-              case 201:
+              case 200:
+                this.setState({
+                  status: "success",
+                  message: "Login successfully"
+                });
                 break;
               case 400:
                 this.setState({
