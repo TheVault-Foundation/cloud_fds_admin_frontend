@@ -7,3 +7,11 @@ export function login(params, onComplete) {
     onComplete
   };
 }
+
+export function register(params, onComplete) {
+  return {
+    type: types.USER_SIGNUP_REQUESTED,
+    params,
+    onComplete
+  };
+}

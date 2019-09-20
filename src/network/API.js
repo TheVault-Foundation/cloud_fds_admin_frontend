@@ -36,21 +36,12 @@ const getInstance = env => {
 
 const API = { instance: getInstance() };
 
-API.login = (email, password) => {
-  const params = {
-    email,
-    password
-  };
-  return API.instance.post("api/login", params);
+API.login = (body) => {
+  return API.instance.post("admin/users/login", body);
 };
 
-API.signUp = (name, email, password) => {
-  const body = {
-    name,
-    email,
-    password
-  };
-  return API.instance.post("api/signup", body);
+API.register = (body) => {
+  return API.instance.post("admin/users", body);
 };
 
 export default API;

@@ -5,12 +5,12 @@ import API from "../../network/API";
 function* register(action) {
   let response = null;
   try {
-    response = yield call(API.register, action.params);
+    response = yield API.register(action.params);
     if (action.onComplete) {
       action.onComplete(response);
     }
 
-    if (response.status === 200) {
+    if (response.status === 201) {
       yield put({
         type: types.USER_SIGNUP_SUCCEEDED,
         data: {
@@ -24,6 +24,9 @@ function* register(action) {
       });
     }
   } catch (error) {
+    if (action.onComplete) {
+      action.onComplete(error);
+    }
     yield put({ type: types.USER_SIGNUP_FAILED, error });
   }
 }

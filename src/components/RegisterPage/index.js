@@ -16,7 +16,8 @@ import {
   InputGroup,
   Container,
   Row,
-  Col
+  Col,
+  Alert
 } from "reactstrap";
 import AuthHeader from "components/Headers/AuthHeader.jsx";
 import ReCAPTCHA from "react-google-recaptcha";
@@ -28,7 +29,9 @@ class RegisterPage extends Component {
       formik,
       t,
       gCapchatSiteKey,
-      handleCaptchaResponseChange
+      handleCaptchaResponseChange,
+      status,
+      message
     } = this.props;
 
     const {
@@ -49,6 +52,7 @@ class RegisterPage extends Component {
         <Container className="mt--8 pb-5">
           <Row className="justify-content-center">
             <Col lg="6" md="8">
+              {message && <Alert color={status}>{message}</Alert>}
               <Card className="bg-secondary border-0">
                 <CardBody className="px-lg-5 py-lg-5">
                   <div className="text-center text-muted mb-4">

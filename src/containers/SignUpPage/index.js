@@ -5,6 +5,7 @@ import { withNamespaces } from "react-i18next";
 import i18n from "i18next";
 import { compose } from "recompose";
 import { Formik } from "formik";
+import { register } from "../../redux/actions";
 
 import RegisterPage from "../../components/RegisterPage";
 
@@ -29,6 +30,7 @@ class SignUpPageContainer extends Component {
 
   render() {
     const { t } = this.props;
+    const { status, message } = this.state;
 
     return (
       <Formik
@@ -58,10 +60,31 @@ class SignUpPageContainer extends Component {
           return errors;
         }}
         onSubmit={(values, { setSubmitting }) => {
-          setTimeout(() => {
-            alert(JSON.stringify(values, null, 2));
+          this.setState({message: ""})
+
+          this.props.register(values, response => {
             setSubmitting(false);
-          }, 1000);
+
+            switch (response.status) {
+              case 201:
+                this.props.history.push({
+                  pathname: "/login",
+                  state: {
+                    status: "success",
+                    message: "A message with a confirmation link has been sent to your email address. Please follow the link to activate your account."
+                  }
+                });
+                break;
+              case 400:
+                this.setState({
+                  status: "danger",
+                  message: "Username is already existed"
+                });
+                break;
+              default:
+                break;
+            }
+          });
         }}
       >
         {formik => (
@@ -70,6 +93,8 @@ class SignUpPageContainer extends Component {
             t={t}
             gCapchatSiteKey={siteKey}
             handleCaptchaResponseChange={this.handleCaptchaResponseChange}
+            status={status}
+            message={message}
           />
         )}
       </Formik>
@@ -88,6 +113,8 @@ export default compose(
   withRouter,
   connect(
     mapStateToProps,
-    {}
+    {
+      register
+    }
   )
 )(SignUpPageContainer);

@@ -15,7 +15,8 @@ import {
   InputGroup,
   Container,
   Row,
-  Col
+  Col,
+  Alert
 } from "reactstrap";
 import AuthHeader from "components/Headers/AuthHeader.jsx";
 import ReCAPTCHA from "react-google-recaptcha";
@@ -29,7 +30,9 @@ class LoginPage extends Component {
       gCapchatSiteKey,
       handleCaptchaResponseChange,
       onClickForgotPassword,
-      onClickCreateNewAccount
+      onClickCreateNewAccount,
+      status,
+      message
     } = this.props;
 
     const {
@@ -49,6 +52,9 @@ class LoginPage extends Component {
         <Container className="mt--8 pb-5">
           <Row className="justify-content-center">
             <Col lg="5" md="7">
+              {message && <Alert color={status}>
+                {message}
+              </Alert>}
               <Card className="bg-secondary border-0 mb-0">
                 <CardBody className="px-lg-5 py-lg-5">
                   <div className="text-center text-muted mb-4">
@@ -76,12 +82,8 @@ class LoginPage extends Component {
                           onChange={e => {
                             setFieldValue("email", e.target.value);
                           }}
-                          onFocus={() =>
-                            this.setState({ focusedEmail: true })
-                          }
-                          onBlur={() =>
-                            this.setState({ focusedEmail: false })
-                          }
+                          onFocus={() => this.setState({ focusedEmail: true })}
+                          onBlur={() => this.setState({ focusedEmail: false })}
                         />
                         {errors.email && (
                           <FormFeedback>{errors.email}</FormFeedback>
@@ -132,9 +134,7 @@ class LoginPage extends Component {
                         className="custom-control-label"
                         htmlFor=" customCheckLogin"
                       >
-                        <span className="text-muted">
-                          {t("remember-me")}
-                        </span>
+                        <span className="text-muted">{t("remember-me")}</span>
                       </label>
                     </div>
 
