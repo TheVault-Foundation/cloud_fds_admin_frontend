@@ -1,6 +1,7 @@
 import { call, put, takeLatest } from "redux-saga/effects";
 import * as types from "../actions/types";
 import API from "../../network/API";
+import { pathOr } from "ramda";
 
 function* login(action) {
   let response = null;
@@ -14,7 +15,7 @@ function* login(action) {
       yield put({
         type: types.USER_LOGIN_SUCCEEDED,
         data: {
-          ...response.data
+          ...pathOr({}, ['data', 'item'], response)
         }
       });
     } else {
