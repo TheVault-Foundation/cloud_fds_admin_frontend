@@ -260,8 +260,17 @@ class RegisterPage extends Component {
                           this.recaptcha = el;
                         }}
                         sitekey={gCapchatSiteKey}
-                        onChange={handleCaptchaResponseChange}
+                        onChange={response => {
+                          setFieldValue('gCaptcha', response);
+                          handleCaptchaResponseChange(response);
+                        }}
                       />
+                      <Input
+                          invalid={errors.gCaptcha ? true : false}
+                          type="hidden"
+                          value={values["gCaptcha"]}
+                        />
+                      {errors.gCaptcha && <FormFeedback>{errors.gCaptcha}</FormFeedback>}
                     </div>
                     <div className="text-center">
                       <Button

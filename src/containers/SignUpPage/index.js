@@ -10,7 +10,7 @@ import { register } from "../../redux/actions";
 import RegisterPage from "../../components/RegisterPage";
 
 const siteKey =
-  process.env.RECAPTCHA_SITE_KEY || "6LePkrgUAAAAAEaSfflZjl-UoDKATwlzaPaLIbug";
+  process.env.RECAPTCHA_SITE_KEY || "6LfycrkUAAAAAC6--8Aj3oKyFcqa4QthTGQLay8I";
 
 class SignUpPageContainer extends Component {
   state = {};
@@ -24,9 +24,7 @@ class SignUpPageContainer extends Component {
     document.body.classList.remove("bg-default");
   }
 
-  handleCaptchaResponseChange = response => {
-    console.log("ReCAPTCHA", response);
-  };
+
 
   render() {
     const { t } = this.props;
@@ -34,7 +32,7 @@ class SignUpPageContainer extends Component {
 
     return (
       <Formik
-        initialValues={{ name: "", email: "", password: "", company: "", address: "", toc: false }}
+        initialValues={{ name: "", email: "", password: "", company: "", address: "", toc: false, "gCaptcha": "" }}
         validateOnChange={false}
         validateOnBlur={false}
         validateOnSubmit
@@ -58,6 +56,10 @@ class SignUpPageContainer extends Component {
 
           if (!values.toc) {
             errors.toc = "Required";
+          }
+
+          if (!values.gCaptcha) {
+            errors.gCaptcha = "Required";
           }
 
           console.log(errors);
@@ -96,7 +98,6 @@ class SignUpPageContainer extends Component {
             formik={formik}
             t={t}
             gCapchatSiteKey={siteKey}
-            handleCaptchaResponseChange={this.handleCaptchaResponseChange}
             status={status}
             message={message}
           />
