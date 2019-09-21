@@ -192,45 +192,6 @@ class Sidebar extends React.Component {
           <Collapse navbar isOpen={true}>
             <Nav navbar>{this.createLinks(routes)}</Nav>
             <hr className="my-3" />
-            <h6 className="navbar-heading p-0 text-muted">Documentation</h6>
-            <Nav className="mb-md-3" navbar>
-              <NavItem>
-                <NavLink
-                  href="https://demos.creative-tim.com/argon-dashboard-pro-react/#/documentation/overview?ref=adpr-sidebar"
-                  target="_blank"
-                >
-                  <i className="ni ni-spaceship" />
-                  <span className="nav-link-text">Getting started</span>
-                </NavLink>
-              </NavItem>
-              <NavItem>
-                <NavLink
-                  href="https://demos.creative-tim.com/argon-dashboard-pro-react/#/documentation/colors?ref=adpr-sidebar"
-                  target="_blank"
-                >
-                  <i className="ni ni-palette" />
-                  <span className="nav-link-text">Foundation</span>
-                </NavLink>
-              </NavItem>
-              <NavItem>
-                <NavLink
-                  href="https://demos.creative-tim.com/argon-dashboard-pro-react/#/documentation/alert?ref=adpr-sidebar"
-                  target="_blank"
-                >
-                  <i className="ni ni-ui-04" />
-                  <span className="nav-link-text">Components</span>
-                </NavLink>
-              </NavItem>
-              <NavItem>
-                <NavLink
-                  href="https://demos.creative-tim.com/argon-dashboard-pro-react/#/documentation/charts?ref=adpr-sidebar"
-                  target="_blank"
-                >
-                  <i className="ni ni-chart-pie-35" />
-                  <span className="nav-link-text">Plugins</span>
-                </NavLink>
-              </NavItem>
-            </Nav>
           </Collapse>
         </div>
       </div>
