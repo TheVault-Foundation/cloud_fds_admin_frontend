@@ -43,23 +43,14 @@ const DashBoard = asyncComponent(() => {
 class App extends Component {
 
   render() {
-    let routes = (
+    return (
       <Switch>
         <Route exact path="/" component={HomePage} />
         <Route path="/login" component={LoginPage} />
         <Route path="/signup" component={SignUpPage} />
-        <Route path="/dashboard" component={DashBoard} />
+        <Route path="/admin" render={props => <DashBoard {...props} />} />
         <Redirect to="/" />
       </Switch>
-    );
-
-    return (
-      <div>
-        {routes}
-        {/* <LoadingSpinner /> */}
-        {/* <ErrorPopup /> */}
-        {/* <AsyncServerRepair /> */}
-      </div>
     );
   }
 }

@@ -7,7 +7,7 @@ import { path } from "ramda";
 class HomePage extends Component {
   componentDidMount() {
     if (this.props.isAuthenticated) {
-      this.props.history.push("/dashboard");
+      this.props.history.push("/admin");
     } else {
       this.props.history.push("/login");
     }
