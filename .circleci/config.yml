@@ -1,0 +1,30 @@
+version: 1
+jobs:
+  build:
+    docker:
+      - image: circleci/node:8
+
+    branches:
+      only:
+        - master
+        - develop
+
+    steps:
+      - checkout
+
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "package.json" }}
+            # fallback to using the latest cache if no exact match is found
+            - v1-dependencies-
+
+      - run: yarn
+
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-dependencies-{{ checksum "package.json" }}
+
+      - deploy:
+          name: centos-server
+          command: ssh -o "StrictHostKeyChecking no" sonpx@cloudfds.tk "cd ~/cloud_fds_admin_frontend; ./deploy.sh"
