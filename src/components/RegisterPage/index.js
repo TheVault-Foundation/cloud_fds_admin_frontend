@@ -23,13 +23,16 @@ import AuthHeader from "components/Headers/AuthHeader.jsx";
 
 class RegisterPage extends Component {
   state = {};
+
+  onKeyDown = e => {
+    const { submitForm } = this.props.formik;
+    if (e.key === "Enter") {
+      submitForm();
+    }
+  };
+
   render() {
-    const {
-      formik,
-      t,
-      status,
-      message
-    } = this.props;
+    const { formik, t, status, message } = this.props;
 
     const {
       isSubmitting,
@@ -79,6 +82,7 @@ class RegisterPage extends Component {
                           onBlur={() => this.setState({ focusedName: false })}
                           invalid={errors.name ? true : false}
                           disabled={isSubmitting}
+                          onKeyDown={this.onKeyDown} 
                         />
                         {errors.name && (
                           <FormFeedback>{errors.name}</FormFeedback>
@@ -108,6 +112,7 @@ class RegisterPage extends Component {
                           onBlur={() => this.setState({ focusedEmail: false })}
                           invalid={errors.email ? true : false}
                           disabled={isSubmitting}
+                          onKeyDown={this.onKeyDown} 
                         />
                         {errors.email && (
                           <FormFeedback>{errors.email}</FormFeedback>
@@ -143,6 +148,7 @@ class RegisterPage extends Component {
                           }
                           invalid={errors.password ? true : false}
                           disabled={isSubmitting}
+                          onKeyDown={this.onKeyDown} 
                         />
 
                         {errors.password && (
@@ -170,17 +176,21 @@ class RegisterPage extends Component {
                           onChange={e => {
                             setFieldValue("company", e.target.value);
                           }}
-                          onFocus={() => this.setState({ focusedCompany: true })}
-                          onBlur={() => this.setState({ focusedCompany: false })}
+                          onFocus={() =>
+                            this.setState({ focusedCompany: true })
+                          }
+                          onBlur={() =>
+                            this.setState({ focusedCompany: false })
+                          }
                           invalid={errors.company ? true : false}
                           disabled={isSubmitting}
+                          onKeyDown={this.onKeyDown} 
                         />
                         {errors.company && (
                           <FormFeedback>{errors.company}</FormFeedback>
                         )}
                       </InputGroup>
                     </FormGroup>
-
 
                     <FormGroup
                       className={classnames({
@@ -201,10 +211,15 @@ class RegisterPage extends Component {
                           onChange={e => {
                             setFieldValue("address", e.target.value);
                           }}
-                          onFocus={() => this.setState({ focusedAddress: true })}
-                          onBlur={() => this.setState({ focusedAddress: false })}
+                          onFocus={() =>
+                            this.setState({ focusedAddress: true })
+                          }
+                          onBlur={() =>
+                            this.setState({ focusedAddress: false })
+                          }
                           invalid={errors.address ? true : false}
                           disabled={isSubmitting}
+                          onKeyDown={this.onKeyDown} 
                         />
                         {errors.address && (
                           <FormFeedback>{errors.address}</FormFeedback>

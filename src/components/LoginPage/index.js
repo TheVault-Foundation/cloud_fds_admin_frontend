@@ -23,6 +23,16 @@ import ReCAPTCHA from "react-google-recaptcha";
 
 class LoginPage extends Component {
   state = {};
+
+  onKeyDown = (e) => {
+    const {
+      submitForm,
+    } = this.props.formik;
+    if (e.key === 'Enter') {
+      submitForm();
+    }
+  }
+
   render() {
     const {
       formik,
@@ -82,6 +92,7 @@ class LoginPage extends Component {
                           }}
                           onFocus={() => this.setState({ focusedEmail: true })}
                           onBlur={() => this.setState({ focusedEmail: false })}
+                          onKeyDown={this.onKeyDown} 
                         />
                         {errors.username && (
                           <FormFeedback>{errors.username}</FormFeedback>
@@ -116,6 +127,7 @@ class LoginPage extends Component {
                               focusedPassword: false
                             })
                           }
+                          onKeyDown={this.onKeyDown} 
                         />
                         {errors.password && (
                           <FormFeedback>{errors.password}</FormFeedback>

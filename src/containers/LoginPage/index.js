@@ -17,9 +17,16 @@ class LoginPageContainer extends Component {
 
   componentDidMount() {
     document.body.classList.add("bg-default");
+  }
+
+  componentWillMount() {
     this.setState({
       status: pathOr("", ["location", "state", "status"], this.props),
       message: pathOr("", ["location", "state", "message"], this.props)
+    });
+    this.props.history.replace({
+      pathname: "/login",
+      state: {}
     });
   }
 
@@ -73,7 +80,7 @@ class LoginPageContainer extends Component {
           return errors;
         }}
         onSubmit={(values, { setSubmitting }) => {
-          this.setState({message: ""})
+          this.setState({ message: "" });
 
           this.props.login(values, response => {
             setSubmitting(false);
@@ -85,7 +92,7 @@ class LoginPageContainer extends Component {
                   message: "Login successfully"
                 });
                 setTimeout(() => {
-                  this.props.history.push('/admin');
+                  this.props.history.push("/admin");
                 }, 2000);
                 break;
               case 400:
