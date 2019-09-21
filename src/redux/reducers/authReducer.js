@@ -28,6 +28,11 @@ const authReducer = enableInitializing((state = INITIAL, action) => {
         error: action.error,
         loading: false
       };
+    case types.USER_LOGOUT_REQUESTED:
+      return {
+        ...state,
+        ...INITIAL
+      };
     default:
       return state;
   }

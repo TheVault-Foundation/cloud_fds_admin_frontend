@@ -15,3 +15,9 @@ export function register(params, onComplete) {
     onComplete
   };
 }
+
+export function logout() {
+  return  {
+    type: types.USER_LOGOUT_REQUESTED
+  }
+}

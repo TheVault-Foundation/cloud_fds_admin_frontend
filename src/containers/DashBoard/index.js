@@ -1,8 +1,9 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
-import DashBoard from "../../components/DashBoard";
+import DashBoard from "components/DashBoard";
 import { path } from "ramda";
+import { logout } from "redux/actions";
 
 class DashBoardContainer extends Component {
   componentDidMount() {
@@ -11,8 +12,13 @@ class DashBoardContainer extends Component {
       }
   }
 
+  onLogoutClick = () => {
+    this.props.logout();
+    this.props.history.push("/");
+  }
+
   render() {
-    return <DashBoard {...this.props} />;
+    return <DashBoard {...this.props} onLogoutClick={this.onLogoutClick} />;
   }
 }
 
@@ -25,6 +31,8 @@ const mapStateToProps = state => {
 export default withRouter(
   connect(
     mapStateToProps,
-    {}
+    {
+        logout
+    }
   )(DashBoardContainer)
 );
