@@ -95,6 +95,9 @@ class LoginPageContainer extends Component {
                   status: "success",
                   message: "Login successfully"
                 });
+                setTimeout(() => {
+                  this.props.history.push('/dashboard');
+                }, 2000);
                 break;
               case 400:
                 this.setState({

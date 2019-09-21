@@ -2,10 +2,15 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import i18n from "i18next";
+import { path } from "ramda";
 
 class HomePage extends Component {
   componentDidMount() {
-    this.props.history.push("/login");
+    if (this.props.isAuthenticated) {
+      this.props.history.push("/dashboard");
+    } else {
+      this.props.history.push("/login");
+    }
   }
 
   render() {
@@ -15,7 +20,7 @@ class HomePage extends Component {
 
 const mapStateToProps = state => {
   return {
-    loggedIn: false
+    isAuthenticated: path(["auth", "data", "access_token"], state)
   };
 };
 

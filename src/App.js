@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { compose } from "recompose";
 import { withNamespaces } from "react-i18next";
-import { Route, Switch, withRouter, Redirect } from "react-router-dom";
+import { BrowserRouter, Route, Switch, withRouter, Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 import asyncComponent from "./hoc/asyncComponent";
 import { path } from "ramda";
@@ -36,6 +36,10 @@ const SignUpPage = asyncComponent(() => {
   return import("./containers/SignUpPage/Loadable");
 });
 
+const DashBoard = asyncComponent(() => {
+  return import("./containers/DashBoard/Loadable");
+});
+
 class App extends Component {
 
   render() {
@@ -44,6 +48,7 @@ class App extends Component {
         <Route exact path="/" component={HomePage} />
         <Route path="/login" component={LoginPage} />
         <Route path="/signup" component={SignUpPage} />
+        <Route path="/dashboard" component={DashBoard} />
         <Redirect to="/" />
       </Switch>
     );
