@@ -32,7 +32,7 @@ class DashBoard extends Component {
         <Route
           path={prop.layout + prop.path}
           component={prop.component}
-          // key={key}
+          key={key}
         />
       );
     });
