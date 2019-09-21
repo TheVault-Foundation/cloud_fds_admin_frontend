@@ -1,5 +1,10 @@
 import React, { Component } from "react";
-import { Route } from "react-router-dom";
+import { Route, Switch } from "react-router-dom";
+import AdminNavbar from "components/Navbars/AdminNavbar.jsx";
+import AdminFooter from "components/Footers/AdminFooter.jsx";
+import Sidebar from "components/Sidebar/Sidebar.jsx";
+
+import routes from "routes.js";
 
 class DashBoard extends Component {
   state = {
@@ -7,7 +12,8 @@ class DashBoard extends Component {
   };
 
   componentDidMount() {
-    // this.props.history.push("/login");
+    document.body.classList.add("g-sidenav-pinned");
+    document.body.classList.remove("g-sidenav-hidden");
   }
 
   componentDidUpdate(e) {
@@ -22,17 +28,13 @@ class DashBoard extends Component {
       if (prop.collapse) {
         return this.getRoutes(prop.views);
       }
-      if (prop.layout === "/admin") {
-        return (
-          <Route
-            path={prop.layout + prop.path}
-            component={prop.component}
-            key={key}
-          />
-        );
-      } else {
-        return null;
-      }
+      return (
+        <Route
+          path={prop.layout + prop.path}
+          component={prop.component}
+          // key={key}
+        />
+      );
     });
   };
 
@@ -55,7 +57,29 @@ class DashBoard extends Component {
   };
 
   render() {
-    return <></>;
+    return (
+      <>
+        <Sidebar
+          {...this.props}
+          routes={routes}
+          toggleSidenav={this.toggleSidenav}
+          sidenavOpen={this.state.sidenavOpen}
+        />
+        <div
+          className="main-content"
+          ref="mainContent"
+          onClick={this.closeSidenav}
+        >
+          <AdminNavbar
+            {...this.props}
+            brandText={this.getBrandText(this.props.location.pathname)}
+          />
+          <Switch>{this.getRoutes(routes)}</Switch>
+          <AdminFooter />
+        </div>
+        <div className="backdrop d-xl-none" onClick={this.toggleSidenav} />
+      </>
+    );
   }
 }
 
