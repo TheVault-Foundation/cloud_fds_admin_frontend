@@ -4,11 +4,12 @@ import LogInterceptor from "./interceptors/log";
 import AccessTokenInterceptor from "./interceptors/accessToken";
 import UnauthorizeInterceptor from "./interceptors/unauthorize";
 
-const BASE_URL = process.env.BASE_URL;
+const BASE_URL = process.env.REACT_APP_BASE_URL;
 
 const getInstance = env => {
+  console.log('BASE_URL', BASE_URL)
   const instance = axios.create({
-    baseURL: 'http://127.0.0.1:5000/v1/',
+    baseURL: BASE_URL,
     timeout: 30000,
     validateStatus: function (status) {
       return status >= 200 && status <= 503;
