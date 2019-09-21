@@ -20,7 +20,6 @@ import {
   Alert
 } from "reactstrap";
 import AuthHeader from "components/Headers/AuthHeader.jsx";
-import ReCAPTCHA from "react-google-recaptcha";
 
 class RegisterPage extends Component {
   state = {};
@@ -28,8 +27,6 @@ class RegisterPage extends Component {
     const {
       formik,
       t,
-      gCapchatSiteKey,
-      handleCaptchaResponseChange,
       status,
       message
     } = this.props;
@@ -252,26 +249,6 @@ class RegisterPage extends Component {
                         )}
                       </Col>
                     </Row>
-                    <div className="text-center text-muted mb-4">
-                      <ReCAPTCHA
-                        style={{ display: "inline-block" }}
-                        className="mt-4"
-                        ref={el => {
-                          this.recaptcha = el;
-                        }}
-                        sitekey={gCapchatSiteKey}
-                        onChange={response => {
-                          setFieldValue('gCaptcha', response);
-                          handleCaptchaResponseChange(response);
-                        }}
-                      />
-                      <Input
-                          invalid={errors.gCaptcha ? true : false}
-                          type="hidden"
-                          value={values["gCaptcha"]}
-                        />
-                      {errors.gCaptcha && <FormFeedback>{errors.gCaptcha}</FormFeedback>}
-                    </div>
                     <div className="text-center">
                       <Button
                         className="mt-4"

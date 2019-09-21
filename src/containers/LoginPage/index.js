@@ -9,9 +9,6 @@ import { login } from "../../redux/actions";
 
 import LoginPage from "../../components/LoginPage";
 
-const siteKey =
-  process.env.RECAPTCHA_SITE_KEY || "6LfycrkUAAAAAC6--8Aj3oKyFcqa4QthTGQLay8I";
-
 class LoginPageContainer extends Component {
   state = {
     status: "",
@@ -34,10 +31,6 @@ class LoginPageContainer extends Component {
     this.props.history.push("/signup");
   };
 
-  handleCaptchaResponseChange = response => {
-    console.log("ReCAPTCHA", response);
-  };
-
   signIn = () => {
     console.log("Login-Form", this.emailRef.text);
   };
@@ -58,7 +51,7 @@ class LoginPageContainer extends Component {
 
     return (
       <Formik
-        initialValues={{ username: "", password: "", "gCaptcha": "" }}
+        initialValues={{ username: "", password: "" }}
         validateOnChange={false}
         validateOnBlur={false}
         validateOnSubmit
@@ -74,10 +67,6 @@ class LoginPageContainer extends Component {
 
           if (!values.password) {
             errors.password = "Required";
-          }
-
-          if (!values.gCaptcha) {
-            errors.gCaptcha = "Required";
           }
 
           console.log(errors);
@@ -115,8 +104,6 @@ class LoginPageContainer extends Component {
           <LoginPage
             formik={formik}
             t={t}
-            gCapchatSiteKey={siteKey}
-            handleCaptchaResponseChange={this.handleCaptchaResponseChange}
             onClickForgotPassword={this.onClickForgotPassword}
             onClickCreateNewAccount={this.onClickCreateNewAccount}
             status={status}

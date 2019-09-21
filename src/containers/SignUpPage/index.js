@@ -9,9 +9,6 @@ import { register } from "../../redux/actions";
 
 import RegisterPage from "../../components/RegisterPage";
 
-const siteKey =
-  process.env.RECAPTCHA_SITE_KEY || "6LfycrkUAAAAAC6--8Aj3oKyFcqa4QthTGQLay8I";
-
 class SignUpPageContainer extends Component {
   state = {};
 
@@ -32,7 +29,7 @@ class SignUpPageContainer extends Component {
 
     return (
       <Formik
-        initialValues={{ name: "", email: "", password: "", company: "", address: "", toc: false, "gCaptcha": "" }}
+        initialValues={{ name: "", email: "", password: "", company: "", address: "", toc: false }}
         validateOnChange={false}
         validateOnBlur={false}
         validateOnSubmit
@@ -56,10 +53,6 @@ class SignUpPageContainer extends Component {
 
           if (!values.toc) {
             errors.toc = "Required";
-          }
-
-          if (!values.gCaptcha) {
-            errors.gCaptcha = "Required";
           }
 
           console.log(errors);
@@ -97,7 +90,6 @@ class SignUpPageContainer extends Component {
           <RegisterPage
             formik={formik}
             t={t}
-            gCapchatSiteKey={siteKey}
             status={status}
             message={message}
           />

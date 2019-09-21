@@ -27,8 +27,6 @@ class LoginPage extends Component {
     const {
       formik,
       t,
-      gCapchatSiteKey,
-      handleCaptchaResponseChange,
       onClickForgotPassword,
       onClickCreateNewAccount,
       status,
@@ -138,26 +136,6 @@ class LoginPage extends Component {
                       </label>
                     </div>
 
-                    <div className="text-center text-muted mb-4">
-                      <ReCAPTCHA
-                        style={{ display: "inline-block" }}
-                        className="mt-4"
-                        ref={el => {
-                          this.recaptcha = el;
-                        }}
-                        sitekey={gCapchatSiteKey}
-                        onChange={(response) => {
-                          setFieldValue("gCaptcha", response);
-                          handleCaptchaResponseChange(response);
-                        }}
-                      />
-                      <Input
-                          invalid={errors.gCaptcha ? true : false}
-                          type="hidden"
-                          value={values["gCaptcha"]}
-                        />
-                      {errors.gCaptcha && <FormFeedback>{errors.gCaptcha}</FormFeedback>}
-                    </div>
 
                     <div className="text-center">
                       <Button
