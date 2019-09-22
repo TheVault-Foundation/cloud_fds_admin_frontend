@@ -61,7 +61,7 @@ class RegisterPage extends Component {
                   <Form role="form">
                     <FormGroup
                       className={classnames({
-                        focused: this.state.focusedName
+                        focused: this.state.focusedUsername
                       })}
                     >
                       <InputGroup className="input-group-merge input-group-alternative mb-3">
@@ -71,21 +71,21 @@ class RegisterPage extends Component {
                           </InputGroupText>
                         </InputGroupAddon>
                         <Input
-                          placeholder={t("name")}
+                          placeholder={t("username")}
                           type="text"
-                          name={"name"}
-                          value={values["name"]}
+                          name={"username"}
+                          value={values["username"]}
                           onChange={e => {
-                            setFieldValue("name", e.target.value);
+                            setFieldValue("username", e.target.value);
                           }}
-                          onFocus={() => this.setState({ focusedName: true })}
-                          onBlur={() => this.setState({ focusedName: false })}
-                          invalid={errors.name ? true : false}
+                          onFocus={() => this.setState({ focusedUsername: true })}
+                          onBlur={() => this.setState({ focusedUsername: false })}
+                          invalid={errors.username ? true : false}
                           disabled={isSubmitting}
                           onKeyDown={this.onKeyDown} 
                         />
-                        {errors.name && (
-                          <FormFeedback>{errors.name}</FormFeedback>
+                        {errors.username && (
+                          <FormFeedback>{errors.username}</FormFeedback>
                         )}
                       </InputGroup>
                     </FormGroup>

@@ -29,14 +29,18 @@ class SignUpPageContainer extends Component {
 
     return (
       <Formik
-        initialValues={{ name: "", email: "", password: "", company: "", address: "", toc: false }}
+        initialValues={{ username: "", email: "", password: "", company: "", address: "", toc: false }}
         validateOnChange={false}
         validateOnBlur={false}
         validateOnSubmit
         validate={values => {
           let errors = {};
-          if (!values.name) {
-            errors.name = "Required";
+          if (!values.username) {
+            errors.username = "Required";
+          } else if (
+            !values.username.match("^[A-z0-9]+$")
+          ) {
+            errors.username = "Username can not contain special characters";
           }
 
           if (!values.email) {

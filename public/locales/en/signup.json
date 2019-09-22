@@ -1,7 +1,7 @@
 {
     "sign-up": "Sign up",
     "create-new-account": "Create new account",
-    "name": "Name",
+    "username": "Username",
     "email": "Email",
     "password": "Password",
     "company": "Company",
