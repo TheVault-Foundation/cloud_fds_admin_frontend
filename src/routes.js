@@ -1,11 +1,12 @@
 import Tables from "./views/pages/tables/Tables.jsx";
+import ApiManagement from "./components/ApiManagement";
 
 const routes = [
   {
     path: "/api-management",
     name: "API Management",
     icon: "fa fa-table text-red",
-    component: Tables,
+    component: ApiManagement,
     layout: "/admin"
   },
   {
