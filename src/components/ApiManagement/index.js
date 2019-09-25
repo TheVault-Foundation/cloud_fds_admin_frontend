@@ -120,7 +120,21 @@ class ApiManagement extends Component {
             <div className="col">
               <Card>
                 <CardHeader className="border-0">
-                  <h3 className="mb-0">Light table</h3>
+                <Row>
+                <Col xs="6">
+                  <h3 className="mb-0">Striped table</h3>
+                </Col>
+                  <Col className="text-right" xs="6">
+                  <Button
+                    className="btn-round btn-icon"
+                    color="primary"
+                    id="tooltip443412080"
+                    onClick={e => e.preventDefault()}
+                  >
+                    <span className="btn-inner--text">Create a new API Key</span>
+                  </Button>
+                </Col>
+                </Row>
                 </CardHeader>
 
                 <Table className="align-items-center table-flush" responsive>
