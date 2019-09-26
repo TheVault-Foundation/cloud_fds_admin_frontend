@@ -64,21 +64,21 @@ class AccountSetting extends Component {
                     <FormGroup>
                       <InputGroup
                         className={classnames("input-group-merge", {
-                          focused: this.state.company
+                          focused: this.state.companyName
                         })}
                       >
                         <Input
-                          invalid={errors.companyName ? true : false}
-                          disabled={isSubmitting}
                           placeholder={t("company-name")}
                           type="text"
+                          name="companyName"
+                          value={values["companyName"]}
                           onFocus={e => this.setState({ companyName: true })}
                           onBlur={e => this.setState({ companyName: false })}
+                          onChange={e => {
+                            setFieldValue("companyName", e.target.value);
+                          }}
                         />
                       </InputGroup>
-                      {errors.companyName && (
-                        <FormFeedback>{errors.companyName}</FormFeedback>
-                      )}
                     </FormGroup>
                   </Col>
                 </Row>
@@ -93,12 +93,15 @@ class AccountSetting extends Component {
                         })}
                       >
                         <Input
-                          invalid={errors.email ? true : false}
-                          disabled={isSubmitting}
                           placeholder={t("email")}
                           type="text"
+                          name="email"
+                          value={values["email"]}
                           onFocus={e => this.setState({ email: true })}
                           onBlur={e => this.setState({ email: false })}
+                          onChange={e => {
+                            setFieldValue("email", e.target.value);
+                          }}
                         />
                       </InputGroup>
                       {errors.email && (
@@ -118,17 +121,17 @@ class AccountSetting extends Component {
                         })}
                       >
                         <Input
-                          invalid={errors.contactNumber ? true : false}
-                          disabled={isSubmitting}
                           placeholder={t("contact-number")}
                           type="text"
+                          name="contactNumber"
+                          value={values["contactNumber"]}
                           onFocus={e => this.setState({ contactNumber: true })}
                           onBlur={e => this.setState({ contactNumber: false })}
+                          onChange={e => {
+                            setFieldValue("contactNumber", e.target.value);
+                          }}
                         />
                       </InputGroup>
-                      {errors.contactNumber && (
-                        <FormFeedback>{errors.contactNumber}</FormFeedback>
-                      )}
                     </FormGroup>
                   </Col>
                 </Row>
@@ -143,17 +146,17 @@ class AccountSetting extends Component {
                         })}
                       >
                         <Input
-                          invalid={errors.address ? true : false}
-                          disabled={isSubmitting}
                           placeholder={t("address")}
                           type="text"
+                          name="address"
+                          value={values["address"]}
                           onFocus={e => this.setState({ address: true })}
                           onBlur={e => this.setState({ address: false })}
+                          onChange={e => {
+                            setFieldValue("address", e.target.value);
+                          }}
                         />
                       </InputGroup>
-                      {errors.address && (
-                        <FormFeedback>{errors.address}</FormFeedback>
-                      )}
                     </FormGroup>
                   </Col>
                 </Row>
