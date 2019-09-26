@@ -5,7 +5,7 @@ import { withNamespaces } from "react-i18next";
 import { compose } from "recompose";
 import { Formik } from "formik";
 import { pathOr, path } from "ramda";
-import { login } from "../../redux/actions";
+import { updateUser } from "../../redux/actions";
 
 import AccountSetting from "../../components/AccountSetting";
 
@@ -15,34 +15,32 @@ class AccountSettingContainer extends Component {
     message: ""
   };
 
-  componentDidMount() {
-  }
+  componentDidMount() {}
 
-  componentWillMount() {
-   
-  }
+  componentWillMount() {}
 
-  componentWillUnmount() {
-  }
-
+  componentWillUnmount() {}
 
   handleSubmit = (values, ...rest) => {};
 
   render() {
-    const { t } = this.props;
+    const { t, user = {} } = this.props;
     const { status, message } = this.state;
 
     return (
       <Formik
-        initialValues={{ companyName: "", email: "", contactNumber: "", address: "" }}
+        initialValues={{
+          companyName: user.company || "",
+          email: user.email || "",
+          contactNumber: user.contactNumber || "",
+          address: user.address || ""
+        }}
         validateOnChange={false}
         validateOnBlur={false}
         validateOnSubmit
         validate={values => {
           let errors = {};
-          if (
-            !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(values.email)
-          ) {
+          if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(values.email)) {
             errors.email = "Invalid email address";
           }
 
@@ -52,7 +50,7 @@ class AccountSettingContainer extends Component {
         onSubmit={(values, { setSubmitting }) => {
           this.setState({ message: "" });
 
-          this.props.login(values, response => {
+          this.props.updateUser({userId: user.id, body: values}, response => {
             setSubmitting(false);
 
             switch (response.status) {
@@ -76,6 +74,7 @@ class AccountSettingContainer extends Component {
       >
         {formik => (
           <AccountSetting
+            user={user}
             formik={formik}
             t={t}
             status={status}
@@ -89,7 +88,7 @@ class AccountSettingContainer extends Component {
 
 const mapStateToProps = state => {
   return {
-    loggedIn: false
+    user: path(["auth", "data"], state)
   };
 };
 
@@ -99,7 +98,7 @@ export default compose(
   connect(
     mapStateToProps,
     {
-      
+      updateUser
     }
   )
 )(AccountSettingContainer);

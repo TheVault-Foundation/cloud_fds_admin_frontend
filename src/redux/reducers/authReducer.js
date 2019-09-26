@@ -1,5 +1,6 @@
 import * as types from "../actions/types";
 import { enableInitializing } from "initializable-reducer";
+import { omit } from "ramda";
 
 const INITIAL = {
   data: {},
@@ -32,6 +33,17 @@ const authReducer = enableInitializing((state = INITIAL, action) => {
       return {
         ...state,
         ...INITIAL
+      };
+    case types.USER_UPDATE_SUCCEEDED:
+      return {
+        ...state,
+        data: Object.assign(state.data, action.data)
+      };
+    case types.USER_UPDATE_FAILED:
+      return {
+        ...state,
+        error: action.error,
+        loading: false
       };
     default:
       return state;
