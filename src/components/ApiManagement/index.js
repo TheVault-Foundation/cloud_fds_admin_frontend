@@ -35,7 +35,7 @@ import {
 import SimpleHeader from "components/Headers/SimpleHeader.jsx";
 import { path, pathOr } from "ramda";
 
-import API from "../../network/API"
+import API from "../../network/API";
 
 class ApiManagement extends Component {
   state = {
@@ -54,11 +54,12 @@ class ApiManagement extends Component {
       API.getUserApi(userId).then(response => {
         if (response.status === 200) {
           const apis = pathOr([], ["data", "items"], response);
-          this.setState( { apis })
+          const activateAPIs = apis.filter(api => api.isActive);
+          this.setState({ apis: activateAPIs });
         }
       });
     }
-  }
+  };
 
   createUserApi = () => {
     const { user } = this.props;
@@ -67,9 +68,20 @@ class ApiManagement extends Component {
       if (response.status === 200) {
         this.loadUserApi();
       }
-    })
-  }
- 
+    });
+  };
+
+  deactivateUserApi = apiId => {
+    const { user } = this.props;
+    const userId = path(["id"], user);
+    console.log("apiId", apiId);
+    API.updateUserApi(userId, apiId, { isActive: false }).then(response => {
+      if (response.status === 204) {
+        this.loadUserApi();
+      }
+    });
+  };
+
   toggleModal = state => {
     this.setState({
       [state]: !this.state[state]
@@ -84,7 +96,16 @@ class ApiManagement extends Component {
         <td className="budget">{api.createdAt}</td>
         <td>
           <div className="avatar-group">
-            <Button color="default" size="sm" outline type="button">
+            <Button
+              color="default"
+              size="sm"
+              outline
+              type="button"
+              onClick={e => {
+                e.preventDefault();
+                this.deactivateUserApi(api.id);
+              }}
+            >
               Deactivate
             </Button>
             <Button
@@ -110,7 +131,7 @@ class ApiManagement extends Component {
         <td className="budget">{api.createdAt}</td>
         <td>
           <div className="avatar-group">
-            <Button color="default" size="sm" outline type="button">
+            <Button color="default" size="sm" outline type="button" id={api.id}>
               Deactivate
             </Button>
             <Button
@@ -138,21 +159,23 @@ class ApiManagement extends Component {
             <div className="col">
               <Card>
                 <CardHeader className="border-0">
-                <Row>
-                <Col xs="6">
-                  <h3 className="mb-0">Striped table</h3>
-                </Col>
-                  <Col className="text-right" xs="6">
-                  <Button
-                    className="btn-round btn-icon"
-                    color="primary"
-                    id="tooltip443412080"
-                    onClick={this.createUserApi}
-                  >
-                    <span className="btn-inner--text">Create a new API Key</span>
-                  </Button>
-                </Col>
-                </Row>
+                  <Row>
+                    <Col xs="6">
+                      <h3 className="mb-0">API Management</h3>
+                    </Col>
+                    <Col className="text-right" xs="6">
+                      <Button
+                        className="btn-round btn-icon"
+                        color="primary"
+                        id="tooltip443412080"
+                        onClick={this.createUserApi}
+                      >
+                        <span className="btn-inner--text">
+                          Create a new API Key
+                        </span>
+                      </Button>
+                    </Col>
+                  </Row>
                 </CardHeader>
 
                 <Table className="align-items-center table-flush" responsive>
@@ -208,7 +231,7 @@ class ApiManagement extends Component {
                             this.setState({ apiSecretShown: newState });
                           }}
                         >
-                          {this.state.apiSecretShown ? "Hide": "Show"}
+                          {this.state.apiSecretShown ? "Hide" : "Show"}
                         </Button>
                       </InputGroupAddon>
                     </FormGroup>
