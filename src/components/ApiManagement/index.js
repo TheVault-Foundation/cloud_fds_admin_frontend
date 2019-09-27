@@ -44,11 +44,12 @@ class ApiManagement extends Component {
   };
 
   componentDidMount() {
+    this.loadUserApi();
+  }
+
+  loadUserApi = () => {
     const { user } = this.props;
     const userId = path(["id"], user);
-
-    console.log('userId', userId)
-
     if (userId) {
       API.getUserApi(userId).then(response => {
         if (response.status === 200) {
@@ -59,6 +60,15 @@ class ApiManagement extends Component {
     }
   }
 
+  createUserApi = () => {
+    const { user } = this.props;
+    const userId = path(["id"], user);
+    API.createUserApi(userId).then(response => {
+      if (response.status === 200) {
+        this.loadUserApi();
+      }
+    })
+  }
  
   toggleModal = state => {
     this.setState({
@@ -68,7 +78,7 @@ class ApiManagement extends Component {
 
   renderItem = api => {
     return (
-      <tr>
+      <tr key={api.apiKey}>
         <th scope="row">{api.apiKey}</th>
         <td className="budget">{api.createdBy}</td>
         <td className="budget">{api.createdAt}</td>
@@ -137,7 +147,7 @@ class ApiManagement extends Component {
                     className="btn-round btn-icon"
                     color="primary"
                     id="tooltip443412080"
-                    onClick={e => e.preventDefault()}
+                    onClick={this.createUserApi}
                   >
                     <span className="btn-inner--text">Create a new API Key</span>
                   </Button>
