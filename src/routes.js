@@ -1,5 +1,5 @@
 import Tables from "./views/pages/tables/Tables.jsx";
-import ApiManagement from "./components/ApiManagement";
+import ApiManagement from "./containers/ApiManagement";
 
 const routes = [
   {

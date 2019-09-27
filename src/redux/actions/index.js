@@ -21,3 +21,11 @@ export function logout() {
     type: types.USER_LOGOUT_REQUESTED
   }
 }
+
+export function getUserAPI(userId, onComplete) {
+  return  {
+    type: types.USERAPI_GET_REQUESTED
+  }
+}
+
+}

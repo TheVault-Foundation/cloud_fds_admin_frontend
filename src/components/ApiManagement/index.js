@@ -33,6 +33,9 @@ import {
 } from "reactstrap";
 // core components
 import SimpleHeader from "components/Headers/SimpleHeader.jsx";
+import { path, pathOr } from "ramda";
+
+import API from "../../network/API"
 
 class ApiManagement extends Component {
   state = {
@@ -41,43 +44,22 @@ class ApiManagement extends Component {
   };
 
   componentDidMount() {
-    let apis = [];
-    for (let i = 0; i < 3; i++) {
-      apis.push({
-        key: this.makeId(20),
-        createdBy: "00" + i,
-        created: this.randomDate(
-          new Date(2012, 0, 1),
-          new Date()
-        ).toDateString()
+    const { user } = this.props;
+    const userId = path(["id"], user);
+
+    console.log('userId', userId)
+
+    if (userId) {
+      API.getUserApi(userId).then(response => {
+        if (response.status === 200) {
+          const apis = pathOr([], ["data", "items"], response);
+          this.setState( { apis })
+        }
       });
     }
-    this.setState({ apis });
   }
 
-  randomDate = (start, end) => {
-    return new Date(
-      start.getTime() + Math.random() * (end.getTime() - start.getTime())
-    );
-  };
-
-  makeId = length => {
-    var result = "";
-    var characters =
-      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-    var charactersLength = characters.length;
-    for (var i = 0; i < length; i++) {
-      result += characters.charAt(Math.floor(Math.random() * charactersLength));
-    }
-    return result;
-  };
-
-  getRandomInt = (min, max) => {
-    min = Math.ceil(min);
-    max = Math.floor(max);
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-  };
-
+ 
   toggleModal = state => {
     this.setState({
       [state]: !this.state[state]
@@ -87,9 +69,35 @@ class ApiManagement extends Component {
   renderItem = api => {
     return (
       <tr>
-        <th scope="row">{api.key}</th>
+        <th scope="row">{api.apiKey}</th>
         <td className="budget">{api.createdBy}</td>
-        <td className="budget">{api.created}</td>
+        <td className="budget">{api.createdAt}</td>
+        <td>
+          <div className="avatar-group">
+            <Button color="default" size="sm" outline type="button">
+              Deactivate
+            </Button>
+            <Button
+              color="default"
+              size="sm"
+              outline
+              type="button"
+              onClick={() => this.toggleModal("formModal")}
+            >
+              Edit
+            </Button>
+          </div>
+        </td>
+      </tr>
+    );
+  };
+
+  renderModal = api => {
+    return (
+      <tr>
+        <th scope="row">{api.apiKey}</th>
+        <td className="budget">{api.createdBy}</td>
+        <td className="budget">{api.createdAt}</td>
         <td>
           <div className="avatar-group">
             <Button color="default" size="sm" outline type="button">

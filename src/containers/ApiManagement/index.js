@@ -12,10 +12,10 @@ import ApiManagement from "../../components/ApiManagement";
 class ApiManagementContainer extends Component {
 
   render() {
-    const { t } = this.props;
+    const { t, user } = this.props;
 
     return (
-      <ApiManagement>
+      <ApiManagement user={user}> 
       </ApiManagement>
     );
   }
@@ -23,6 +23,7 @@ class ApiManagementContainer extends Component {
 
 const mapStateToProps = state => {
   return {
+    user: path(["auth", "data"], state)
 
   };
 };

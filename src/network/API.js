@@ -48,4 +48,8 @@ API.register = (body) => {
   return API.instance.post("admin/users", body);
 };
 
+API.getUserApi = (userId) => {
+  return API.instance.get(`admin/users/${userId}/userapi`);
+}
+
 export default API;
