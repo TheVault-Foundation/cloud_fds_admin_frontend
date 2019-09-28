@@ -53,4 +53,16 @@ API.getTransactions = (userId, query) => {
   return API.instance.get(`admin/users/${userId}/transactions`, { params: query});
 };
 
+API.getUserApi = (userId) => {
+  return API.instance.get(`admin/users/${userId}/userapi`);
+}
+
+API.createUserApi = (userId) => {
+  return API.instance.post(`admin/users/${userId}/userapi`);
+}
+
+API.updateUserApi = (userId, apiId, body) => {
+  return API.instance.put(`admin/users/${userId}/userapi/${apiId}`, body);
+}
+
 export default API;
