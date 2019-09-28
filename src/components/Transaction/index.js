@@ -71,7 +71,7 @@ const TransactionTable = ({
   onTableChange,
   totalSize
 }) => (
-  <div>
+  <div style={{maxWidth: '100%', overflow: 'scroll'}}>
     <BootstrapTable
       remote
       keyField="id"
