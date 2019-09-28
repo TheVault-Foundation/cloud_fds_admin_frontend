@@ -33,9 +33,20 @@ import {
 } from "reactstrap";
 // core components
 import SimpleHeader from "components/Headers/SimpleHeader.jsx";
+import BootstrapTable, { TableHeaderColumn } from "react-bootstrap-table-next";
 import { path, pathOr } from "ramda";
 
 import API from "../../network/API";
+
+const NoDataIndication = () => (
+  <div className="spinner">
+    <div className="rect1" />
+    <div className="rect2" />
+    <div className="rect3" />
+    <div className="rect4" />
+    <div className="rect5" />
+  </div>
+);
 
 class ApiManagement extends Component {
   state = {
@@ -64,6 +75,7 @@ class ApiManagement extends Component {
   createUserApi = () => {
     const { user } = this.props;
     const userId = path(["id"], user);
+    this.setState({ apis: [] });
     API.createUserApi(userId).then(response => {
       if (response.status === 200) {
         this.loadUserApi();
@@ -74,7 +86,7 @@ class ApiManagement extends Component {
   deactivateUserApi = apiId => {
     const { user } = this.props;
     const userId = path(["id"], user);
-    console.log("apiId", apiId);
+    this.setState({ apis: [] });
     API.updateUserApi(userId, apiId, { isActive: false }).then(response => {
       if (response.status === 204) {
         this.loadUserApi();
@@ -86,6 +98,19 @@ class ApiManagement extends Component {
     this.setState({
       [state]: !this.state[state]
     });
+  };
+
+  buttonFormatter = (cell, row) => {
+    console.log("cell", cell);
+    console.log("row", row);
+    const apiId = row.id;
+    return (
+      <div className="avatar-group">
+        <Button color="default" size="sm" outline type="button" onClick={() => this.deactivateUserApi(apiId)}>
+          Deactivate
+        </Button>
+      </div>
+    );
   };
 
   renderItem = api => {
@@ -178,19 +203,38 @@ class ApiManagement extends Component {
                   </Row>
                 </CardHeader>
 
-                <Table className="align-items-center table-flush" responsive>
-                  <thead className="thead-light">
-                    <tr>
-                      <th scope="col">API Key</th>
-                      <th scope="col">Created by</th>
-                      <th scope="col">Created</th>
-                      <th scope="col">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody className="list">
-                    {apis.map(api => this.renderItem(api))}
-                  </tbody>
-                </Table>
+                <BootstrapTable
+                  noDataIndication={() => <NoDataIndication />}
+                  keyField="apiKey"
+                  bootstrap4={true}
+                  bordered={false}
+                  data={apis}
+                  columns={[
+                    {
+                      dataField: "apiKey",
+                      text: "API Key",
+                      searchable: true
+                    },
+                    {
+                      dataField: "createdBy",
+                      text: "Created By"
+                    },
+                    {
+                      dataField: "createdAt",
+                      text: "Created At"
+                    },
+                    {
+                      dataField: "actions",
+                      formatter: this.buttonFormatter,
+                      csvExport: false,
+                      text: "Actions",
+                      isDummyField: true
+                    }
+                  ]}
+                  page={1}
+                  sizePerPage={10}
+                  totalSize={10}
+                />
               </Card>
             </div>
           </Row>
