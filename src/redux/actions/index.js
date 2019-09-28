@@ -21,3 +21,11 @@ export function logout() {
     type: types.USER_LOGOUT_REQUESTED
   }
 }
+
+export function updateUser(params, onComplete) {
+  return  {
+    type: types.USER_UPDATE_REQUESTED,
+    params,
+    onComplete
+  }
+}

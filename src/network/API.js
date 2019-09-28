@@ -41,11 +41,11 @@ const getInstance = env => {
 
 const API = { instance: getInstance() };
 
-API.login = (body) => {
+API.login = body => {
   return API.instance.post("admin/users/login", body);
 };
 
-API.register = (body) => {
+API.register = body => {
   return API.instance.post("admin/users", body);
 };
 
@@ -64,5 +64,13 @@ API.createUserApi = (userId) => {
 API.updateUserApi = (userId, apiId, body) => {
   return API.instance.put(`admin/users/${userId}/userapi/${apiId}`, body);
 }
+API.updateUser = (userId, body) => {
+  return API.instance.put(`admin/users/${userId}`, body);
+};
+
+API.getUserInfo = userId => {
+  return API.instance.get(`admin/users/${userId}`);
+};
+
 
 export default API;
