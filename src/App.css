@@ -31,3 +31,194 @@
     transform: rotate(360deg);
   }
 }
+
+
+/* customized style for storybook*/
+body {
+  font-family: "Roboto", Arial, "Helvetica Neue", Helvetica, sans-serif;
+  font-weight: 300; }
+
+.github-corner:hover .octo-arm {
+  animation: octocat-wave 560ms ease-in-out; }
+
+@keyframes octocat-wave {
+  0%,
+  100% {
+    transform: rotate(0); }
+  20%,
+  60% {
+    transform: rotate(-25deg); }
+  40%,
+  80% {
+    transform: rotate(10deg); } }
+
+@media (max-width: 500px) {
+  .github-corner:hover .octo-arm {
+    animation: none; }
+  .github-corner .octo-arm {
+    animation: octocat-wave 560ms ease-in-out; } }
+
+.highlight-text-html-basic {
+  margin-bottom: 16px; }
+  .highlight-text-html-basic pre {
+    background-color: #f6f8fa;
+    padding: 16px;
+    border-radius: 3px; }
+
+table.foo {
+  background-color: #9E9E9E; }
+
+table#bar {
+  background-color: #00BFFF; }
+
+div.boo {
+  border: 2px solid salmon; }
+
+.welcome {
+  margin-top: 70px;
+  text-align: center;
+  padding: 30px 30px; }
+  .welcome-title {
+    color: #212121;
+    width: 100%;
+    display: inline-flex;
+    justify-content: center;
+    align-content: center; }
+    .welcome-title-logo {
+      position: relative;
+      top: -8px;
+      right: -12px;
+      width: 96px;
+      height: 96px; }
+  .welcome-sub-title {
+    font-size: 30px;
+    color: #9E9E9E; }
+
+span.love-icon {
+  color: #E91E63; }
+
+/* Adding cursor blinking animation */
+.typed-cursor {
+  font-size: 30px;
+  color: #9E9E9E;
+  opacity: 1;
+  animation: typedjsBlink 0.7s infinite; }
+
+@keyframes typedjsBlink {
+  50% {
+    opacity: 0.0; } }
+
+@-webkit-keyframes typedjsBlink {
+  0% {
+    opacity: 1; }
+  50% {
+    opacity: 0.0; }
+  100% {
+    opacity: 1; } }
+
+.typed-fade-out {
+  opacity: 0;
+  transition: opacity .25s;
+  animation: 0; }
+
+.demo-key-row {
+  font-weight: bold;
+  font-size: 18px; }
+
+.demo-row-even {
+  background-color: #81c784; }
+
+.demo-row-odd {
+  background-color: #c8e6c9; }
+
+.header-class {
+  background-color: #c8e6c9; }
+
+.footer-class {
+  background-color: #c8e6c9; }
+
+.editing-name {
+  background-color: #20B2AA; }
+
+.editing-price-bigger-than-2101 {
+  background-color: #00BFFF; }
+
+.editing-price-small-than-2101 {
+  background-color: #00FFFF; }
+
+.selection-row {
+  background-color: #c8e6c9; }
+
+.row-index-bigger-than-2101 {
+  background-color: #00BFFF; }
+
+.row-index-small-than-2101 {
+  background-color: #00FFFF; }
+
+.custom-row-class {
+  background-color: #c8e6c9; }
+
+.index-bigger-than-two {
+  background-color: #00BFFF; }
+
+.demo-sorting,
+.demo-sorting-asc {
+  background-color: #81c784; }
+
+.demo-sorting-desc {
+  background-color: #00BFFF; }
+
+.custome-search-field {
+  background-color: #c8e6c9; }
+
+.spinner {
+  margin: 100px auto;
+  width: 50px;
+  height: 40px;
+  text-align: center;
+  font-size: 10px; }
+
+.spinner > div {
+  background-color: #333;
+  height: 100%;
+  width: 6px;
+  display: inline-block;
+  -webkit-animation: sk-stretchdelay 1.2s infinite ease-in-out;
+  animation: sk-stretchdelay 1.2s infinite ease-in-out; }
+
+.spinner .rect2 {
+  -webkit-animation-delay: -1.1s;
+  animation-delay: -1.1s; }
+
+.spinner .rect3 {
+  -webkit-animation-delay: -1.0s;
+  animation-delay: -1.0s; }
+
+.spinner .rect4 {
+  -webkit-animation-delay: -0.9s;
+  animation-delay: -0.9s; }
+
+.spinner .rect5 {
+  -webkit-animation-delay: -0.8s;
+  animation-delay: -0.8s; }
+
+@-webkit-keyframes sk-stretchdelay {
+  0%, 40%, 100% {
+    -webkit-transform: scaleY(0.4); }
+  20% {
+    -webkit-transform: scaleY(1); } }
+
+@keyframes sk-stretchdelay {
+  0%, 40%, 100% {
+    transform: scaleY(0.4);
+    -webkit-transform: scaleY(0.4); }
+  20% {
+    transform: scaleY(1);
+    -webkit-transform: scaleY(1); } }
+
+.expanding-foo, .parent-expand-foo {
+  background-color: coral; }
+
+.expanding-bar, .parent-expand-bar {
+  background-color: aqua; }
+

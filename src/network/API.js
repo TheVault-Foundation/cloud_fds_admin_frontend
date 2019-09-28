@@ -4,13 +4,14 @@ import LogInterceptor from "./interceptors/log";
 import AccessTokenInterceptor from "./interceptors/accessToken";
 import UnauthorizeInterceptor from "./interceptors/unauthorize";
 
+
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 
 const getInstance = env => {
   console.log('BASE_URL', BASE_URL)
   const instance = axios.create({
     baseURL: BASE_URL,
-    timeout: 30000,
+    timeout: 60000,
     validateStatus: function (status) {
       return status >= 200 && status <= 503;
   },
@@ -46,6 +47,10 @@ API.login = (body) => {
 
 API.register = (body) => {
   return API.instance.post("admin/users", body);
+};
+
+API.getTransactions = (userId, query) => {
+  return API.instance.get(`admin/users/${userId}/transactions`, { params: query});
 };
 
 export default API;

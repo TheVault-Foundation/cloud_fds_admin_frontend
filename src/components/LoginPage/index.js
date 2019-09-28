@@ -114,7 +114,7 @@ class LoginPage extends Component {
                           placeholder="Password"
                           type="password"
                           name={"password"}
-                          invalid={errors.email ? true : false}
+                          invalid={errors.password ? true : false}
                           disabled={isSubmitting}
                           onChange={e => {
                             setFieldValue("password", e.target.value);

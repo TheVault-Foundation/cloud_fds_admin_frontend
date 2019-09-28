@@ -1,4 +1,5 @@
 import Tables from "./views/pages/tables/Tables.jsx";
+import Transaction from "./containers/Transaction";
 
 const routes = [
   {
@@ -12,7 +13,7 @@ const routes = [
     path: "/transaction",
     name: "User Transaction",
     icon: "fa fa-user text-red",
-    component: Tables,
+    component: Transaction,
     layout: "/admin"
   },
   
