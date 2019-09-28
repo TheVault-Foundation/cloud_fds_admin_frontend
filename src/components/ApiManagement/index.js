@@ -3,37 +3,23 @@ import React, { Component } from "react";
 import classnames from "classnames";
 // reactstrap components
 import {
-  Badge,
   Button,
   Card,
   CardHeader,
-  CardFooter,
-  DropdownMenu,
-  DropdownItem,
-  DropdownToggle,
-  UncontrolledDropdown,
-  Media,
-  Pagination,
-  PaginationItem,
-  PaginationLink,
-  Progress,
-  Table,
   Container,
   Row,
   Col,
-  UncontrolledTooltip,
   Modal,
   Form,
   FormGroup,
-  InputGroup,
   InputGroupAddon,
-  InputGroupText,
   CardBody,
-  Input
+  Input,
+  Alert
 } from "reactstrap";
 // core components
 import SimpleHeader from "components/Headers/SimpleHeader.jsx";
-import BootstrapTable, { TableHeaderColumn } from "react-bootstrap-table-next";
+import BootstrapTable from "react-bootstrap-table-next";
 import { path, pathOr } from "ramda";
 
 import API from "../../network/API";
@@ -73,6 +59,20 @@ class ApiManagement extends Component {
   };
 
   createUserApi = () => {
+    if (this.state.apis && this.state.apis.length === 3) {
+      this.setState({
+        status: "danger",
+        message: "Maximum number of api keys is 3"
+      });
+      setTimeout(() => {
+        this.setState({
+          status: null,
+          message: null
+        });
+      }, 5000)
+      return;
+    }
+
     const { user } = this.props;
     const userId = path(["id"], user);
     this.setState({ apis: [] });
@@ -175,7 +175,7 @@ class ApiManagement extends Component {
   };
 
   render() {
-    const { apis = [] } = this.state;
+    const { apis = [], message, status} = this.state;
     return (
       <>
         <SimpleHeader name="Tables" parentName="Tables" />
@@ -202,6 +202,10 @@ class ApiManagement extends Component {
                     </Col>
                   </Row>
                 </CardHeader>
+
+                {message && <Alert color={status}>
+                  {message}
+                </Alert>}
 
                 <BootstrapTable
                   noDataIndication={() => <NoDataIndication />}
