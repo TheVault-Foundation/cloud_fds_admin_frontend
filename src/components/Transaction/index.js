@@ -141,7 +141,7 @@ class Transaction extends Component {
     this.getTransactions(page, sizePerPage);
   };
 
-  getTransactions = (page, sizePerPage) => {
+  getTransactions = (page, sizePerPage = 10) => {
     const query = {
       page: page,
       size: sizePerPage
