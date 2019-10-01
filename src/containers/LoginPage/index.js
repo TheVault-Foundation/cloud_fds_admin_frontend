@@ -96,9 +96,10 @@ class LoginPageContainer extends Component {
                 }, 2000);
                 break;
               case 400:
+                const message = path(["data", "error", "message"], response) || "Invalid username or password"
                 this.setState({
                   status: "danger",
-                  message: "Invalid username or password"
+                  message: message
                 });
                 break;
               default:
