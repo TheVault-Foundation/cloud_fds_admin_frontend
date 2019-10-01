@@ -112,7 +112,8 @@ class ApiManagement extends Component {
   loadUserApi = (page = 1, sizePerPage = 10) => {
     const query = {
       page: page,
-      size: sizePerPage
+      size: sizePerPage,
+      active: true
     };
 
     const { user } = this.props;
