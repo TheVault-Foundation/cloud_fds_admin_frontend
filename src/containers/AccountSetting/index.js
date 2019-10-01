@@ -15,7 +15,12 @@ class AccountSettingContainer extends Component {
     message: ""
   };
 
-  componentDidMount() {}
+  componentDidMount() {
+    this.setState({
+      status: "",
+      message: ""
+    });
+  }
 
   componentWillMount() {}
 
