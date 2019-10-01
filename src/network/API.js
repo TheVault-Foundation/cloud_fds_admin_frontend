@@ -53,8 +53,8 @@ API.getTransactions = (userId, query) => {
   return API.instance.get(`admin/users/${userId}/transactions`, { params: query});
 };
 
-API.getUserApi = (userId) => {
-  return API.instance.get(`admin/users/${userId}/userapi`);
+API.getUserApi = (userId, query) => {
+  return API.instance.get(`admin/users/${userId}/userapi`, { params: query});
 }
 
 API.createUserApi = (userId) => {

@@ -20,9 +20,66 @@ import {
 // core components
 import SimpleHeader from "components/Headers/SimpleHeader.jsx";
 import BootstrapTable from "react-bootstrap-table-next";
+import paginationFactory from "react-bootstrap-table2-paginator";
 import { path, pathOr } from "ramda";
 
 import API from "../../network/API";
+
+
+
+const ApiTable = ({
+  columns,
+  data,
+  page,
+  sizePerPage,
+  onTableChange,
+  totalSize
+}) => (
+  <div style={{maxWidth: '100%', overflow: 'scroll'}}>
+    <BootstrapTable
+      remote
+      keyField="id"
+      data={data}
+      columns={columns}
+      pagination={paginationFactory({
+        page,
+        sizePerPage,
+        totalSize,
+        alwaysShowAllBtns: true,
+        showTotal: true,
+        withFirstAndLast: false,
+        sizePerPageRenderer: ({
+          options,
+          currSizePerPage,
+          onSizePerPageChange
+        }) => (
+          <div className="dataTables_length" id="datatable-basic_length">
+            <label>
+              Show{" "}
+              {
+                <select
+                  name="datatable-basic_length"
+                  aria-controls="datatable-basic"
+                  className="form-control form-control-sm"
+                  onChange={e => onSizePerPageChange(e.target.value)}
+                >
+                  <option value="10">10</option>
+                  <option value="25">25</option>
+                  <option value="50">50</option>
+                  <option value="100">100</option>
+                </select>
+              }{" "}
+              entries.
+            </label>
+          </div>
+        )
+      })}
+      onTableChange={onTableChange}
+      noDataIndication={() => <NoDataIndication />}
+    />
+  </div>
+);
+
 
 const NoDataIndication = () => (
   <div className="spinner">
@@ -38,22 +95,37 @@ class ApiManagement extends Component {
   state = {
     apis: [],
     apiSecretShown: false,
-    apiModalShown: false
+    apiModalShown: false,
+    page: 1,
+    sizePerPage: 10
   };
 
   componentDidMount() {
-    this.loadUserApi();
+    const { page, sizePerPage } = this.state;
+    this.loadUserApi(page, sizePerPage);
   }
 
-  loadUserApi = () => {
+  handleTableChange = (type, { page, sizePerPage }) => {
+    this.loadUserApi(page, sizePerPage);
+  };
+
+  loadUserApi = (page = 1, sizePerPage = 10) => {
+    const query = {
+      page: page,
+      size: sizePerPage
+    };
+
     const { user } = this.props;
     const userId = path(["id"], user);
+
     if (userId) {
-      API.getUserApi(userId).then(response => {
+      API.getUserApi(userId, query).then(response => {
         if (response.status === 200) {
           const apis = pathOr([], ["data", "items"], response);
+          const count = pathOr([], ["data", "count"], response);
+
           const activateAPIs = apis.filter(api => api.isActive);
-          this.setState({ apis: activateAPIs });
+          this.setState({ apis: activateAPIs, count, page });
         }
       });
     }
@@ -75,22 +147,24 @@ class ApiManagement extends Component {
     }
 
     const { user } = this.props;
+    const { page, sizePerPage } = this.state;
     const userId = path(["id"], user);
     this.setState({ apis: [] });
     API.createUserApi(userId).then(response => {
       if (response.status === 200) {
-        this.loadUserApi();
+        this.loadUserApi(page, sizePerPage);
       }
     });
   };
 
   deactivateUserApi = apiId => {
     const { user } = this.props;
+    const { page, sizePerPage } = this.state;
     const userId = path(["id"], user);
     this.setState({ apis: [] });
     API.updateUserApi(userId, apiId, { isActive: false }).then(response => {
       if (response.status === 204) {
-        this.loadUserApi();
+        this.loadUserApi(page, sizePerPage);
       }
     });
   };
@@ -238,7 +312,7 @@ class ApiManagement extends Component {
   };
 
   render() {
-    const { apis = [], message, status } = this.state;
+    const { apis = [], message, status, count, sizePerPage, page } = this.state;
     return (
       <>
         <SimpleHeader name="Tables" parentName="Tables" />
@@ -268,8 +342,7 @@ class ApiManagement extends Component {
 
                 {message && <Alert color={status}>{message}</Alert>}
 
-                <BootstrapTable
-                  noDataIndication={() => <NoDataIndication />}
+                <ApiTable
                   keyField="apiKey"
                   bootstrap4={true}
                   bordered={false}
@@ -296,9 +369,10 @@ class ApiManagement extends Component {
                       isDummyField: true
                     }
                   ]}
-                  page={1}
-                  sizePerPage={10}
-                  totalSize={10}
+                  page={page}
+                  sizePerPage={sizePerPage}
+                  totalSize={count}
+                  onTableChange={this.handleTableChange}
                 />
               </Card>
             </div>
