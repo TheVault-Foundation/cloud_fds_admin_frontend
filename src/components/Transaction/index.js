@@ -34,8 +34,8 @@ const { SearchBar } = Search;
 
 const columns = [
   {
-    dataField: "userId",
-    text: "User ID",
+    dataField: "username",
+    text: "Username",
     searchable: true
   },
   {
