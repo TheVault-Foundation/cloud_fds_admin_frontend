@@ -34,8 +34,8 @@ const { SearchBar } = Search;
 
 const columns = [
   {
-    dataField: "userId",
-    text: "User ID",
+    dataField: "username",
+    text: "Username",
     searchable: true
   },
   {
@@ -141,10 +141,11 @@ class Transaction extends Component {
     this.getTransactions(page, sizePerPage);
   };
 
-  getTransactions = (page, sizePerPage) => {
+  getTransactions = (page, sizePerPage = 10) => {
     const query = {
       page: page,
-      size: sizePerPage
+      size: sizePerPage,
+      sort: "createdAt_desc"
     };
 
     console.log("getTransactions - this.props.userId", this.props.userId);

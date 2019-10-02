@@ -20,9 +20,66 @@ import {
 // core components
 import SimpleHeader from "components/Headers/SimpleHeader.jsx";
 import BootstrapTable from "react-bootstrap-table-next";
+import paginationFactory from "react-bootstrap-table2-paginator";
 import { path, pathOr } from "ramda";
 
 import API from "../../network/API";
+
+
+
+const ApiTable = ({
+  columns,
+  data,
+  page,
+  sizePerPage,
+  onTableChange,
+  totalSize
+}) => (
+  <div style={{maxWidth: '100%', overflow: 'scroll'}}>
+    <BootstrapTable
+      remote
+      keyField="id"
+      data={data}
+      columns={columns}
+      pagination={paginationFactory({
+        page,
+        sizePerPage,
+        totalSize,
+        alwaysShowAllBtns: true,
+        showTotal: true,
+        withFirstAndLast: false,
+        sizePerPageRenderer: ({
+          options,
+          currSizePerPage,
+          onSizePerPageChange
+        }) => (
+          <div className="dataTables_length" id="datatable-basic_length">
+            <label>
+              Show{" "}
+              {
+                <select
+                  name="datatable-basic_length"
+                  aria-controls="datatable-basic"
+                  className="form-control form-control-sm"
+                  onChange={e => onSizePerPageChange(e.target.value)}
+                >
+                  <option value="10">10</option>
+                  <option value="25">25</option>
+                  <option value="50">50</option>
+                  <option value="100">100</option>
+                </select>
+              }{" "}
+              entries.
+            </label>
+          </div>
+        )
+      })}
+      onTableChange={onTableChange}
+      noDataIndication={() => <NoDataIndication />}
+    />
+  </div>
+);
+
 
 const NoDataIndication = () => (
   <div className="spinner">
@@ -37,22 +94,39 @@ const NoDataIndication = () => (
 class ApiManagement extends Component {
   state = {
     apis: [],
-    apiSecretShown: false
+    apiSecretShown: false,
+    apiModalShown: false,
+    page: 1,
+    sizePerPage: 10
   };
 
   componentDidMount() {
-    this.loadUserApi();
+    const { page, sizePerPage } = this.state;
+    this.loadUserApi(page, sizePerPage);
   }
 
-  loadUserApi = () => {
+  handleTableChange = (type, { page, sizePerPage }) => {
+    this.loadUserApi(page, sizePerPage);
+  };
+
+  loadUserApi = (page = 1, sizePerPage = 10) => {
+    const query = {
+      page: page,
+      size: sizePerPage,
+      active: true
+    };
+
     const { user } = this.props;
     const userId = path(["id"], user);
+
     if (userId) {
-      API.getUserApi(userId).then(response => {
+      API.getUserApi(userId, query).then(response => {
         if (response.status === 200) {
           const apis = pathOr([], ["data", "items"], response);
+          const count = pathOr([], ["data", "count"], response);
+
           const activateAPIs = apis.filter(api => api.isActive);
-          this.setState({ apis: activateAPIs });
+          this.setState({ apis: activateAPIs, count, page });
         }
       });
     }
@@ -69,27 +143,29 @@ class ApiManagement extends Component {
           status: null,
           message: null
         });
-      }, 5000)
+      }, 5000);
       return;
     }
 
     const { user } = this.props;
+    const { page, sizePerPage } = this.state;
     const userId = path(["id"], user);
     this.setState({ apis: [] });
     API.createUserApi(userId).then(response => {
       if (response.status === 200) {
-        this.loadUserApi();
+        this.loadUserApi(page, sizePerPage);
       }
     });
   };
 
   deactivateUserApi = apiId => {
     const { user } = this.props;
+    const { page, sizePerPage } = this.state;
     const userId = path(["id"], user);
     this.setState({ apis: [] });
     API.updateUserApi(userId, apiId, { isActive: false }).then(response => {
       if (response.status === 204) {
-        this.loadUserApi();
+        this.loadUserApi(page, sizePerPage);
       }
     });
   };
@@ -106,8 +182,25 @@ class ApiManagement extends Component {
     const apiId = row.id;
     return (
       <div className="avatar-group">
-        <Button color="default" size="sm" outline type="button" onClick={() => this.deactivateUserApi(apiId)}>
-          Deactivate
+        <Button
+          color="default"
+          size="sm"
+          outline
+          type="button"
+          onClick={() => this.deactivateUserApi(apiId)}
+        >
+          <i class="fa fa-ban" aria-hidden="true"></i>
+        </Button>
+        <Button
+          color="default"
+          size="sm"
+          outline
+          type="button"
+          onClick={() => {
+            this.setState({ ...row, apiModalShown: true });
+          }}
+        >
+          <i class="fa fa-eye" aria-hidden="true"></i>
         </Button>
       </div>
     );
@@ -138,7 +231,9 @@ class ApiManagement extends Component {
               size="sm"
               outline
               type="button"
-              onClick={() => this.toggleModal("formModal")}
+              onClick={() => {
+                this.setState({ ...api, apiModalShown: true });
+              }}
             >
               Edit
             </Button>
@@ -148,34 +243,77 @@ class ApiManagement extends Component {
     );
   };
 
-  renderModal = api => {
+  renderAPIInfoModal = () => {
+    const { apiName, apiKey, apiSecret, createdAt, createdBy } = this.state;
+
     return (
-      <tr>
-        <th scope="row">{api.apiKey}</th>
-        <td className="budget">{api.createdBy}</td>
-        <td className="budget">{api.createdAt}</td>
-        <td>
-          <div className="avatar-group">
-            <Button color="default" size="sm" outline type="button" id={api.id}>
-              Deactivate
-            </Button>
-            <Button
-              color="default"
-              size="sm"
-              outline
-              type="button"
-              onClick={() => this.toggleModal("formModal")}
-            >
-              Edit
-            </Button>
-          </div>
-        </td>
-      </tr>
+      <Modal
+        className="modal-dialog-centered"
+        size="lg"
+        isOpen={this.state.apiModalShown}
+        toggle={() => {
+          this.setState({ apiModalShown: !this.state.apiModalShown });
+        }}
+      >
+        <div className="modal-body p-0">
+          <Card className="bg-secondary shadow border-0">
+            <CardBody>
+              <Form>
+                <FormGroup>
+                  <label htmlFor="apiName">API Name</label>
+                  <Input id="apiName" type="text" value={apiName} />
+                </FormGroup>
+                <FormGroup>
+                  <label htmlFor="apiKey">API Key</label>
+                  <Input id="apiKey" type="text" value={apiKey} />
+                </FormGroup>
+                <FormGroup>
+                  <label htmlFor="apiSecret">API Secret</label>
+                  <Input
+                    id="apiSecret"
+                    type={this.state.apiSecretShown ? "text" : "password"}
+                    value={apiSecret}
+                  />
+                  <InputGroupAddon addonType="append">
+                    <Button
+                      color="primary"
+                      onClick={() => {
+                        const newState = !this.state.apiSecretShown;
+                        this.setState({ apiSecretShown: newState });
+                      }}
+                    >
+                      {this.state.apiSecretShown ? "Hide" : "Show"}
+                    </Button>
+                  </InputGroupAddon>
+                </FormGroup>
+                <FormGroup>
+                  <label htmlFor="createdAt">Created At</label>
+                  <Input id="createdAt" type="text" value={createdAt} />
+                </FormGroup>
+                <FormGroup>
+                  <label htmlFor="createdBy">Created By</label>
+                  <Input id="createdBy" type="text" value={createdBy} />
+                </FormGroup>
+              </Form>
+              <Button
+                color="primary"
+                type="button"
+                onClick={() => {
+                  const newState = !this.state.apiModalShown;
+                  this.setState({ apiModalShown: newState });
+                }}
+              >
+                Save changes
+              </Button>
+            </CardBody>
+          </Card>
+        </div>
+      </Modal>
     );
   };
 
   render() {
-    const { apis = [], message, status} = this.state;
+    const { apis = [], message, status, count, sizePerPage, page } = this.state;
     return (
       <>
         <SimpleHeader name="Tables" parentName="Tables" />
@@ -203,12 +341,9 @@ class ApiManagement extends Component {
                   </Row>
                 </CardHeader>
 
-                {message && <Alert color={status}>
-                  {message}
-                </Alert>}
+                {message && <Alert color={status}>{message}</Alert>}
 
-                <BootstrapTable
-                  noDataIndication={() => <NoDataIndication />}
+                <ApiTable
                   keyField="apiKey"
                   bootstrap4={true}
                   bordered={false}
@@ -235,65 +370,16 @@ class ApiManagement extends Component {
                       isDummyField: true
                     }
                   ]}
-                  page={1}
-                  sizePerPage={10}
-                  totalSize={10}
+                  page={page}
+                  sizePerPage={sizePerPage}
+                  totalSize={count}
+                  onTableChange={this.handleTableChange}
                 />
               </Card>
             </div>
           </Row>
 
-          <Modal
-            className="modal-dialog-centered"
-            size="lg"
-            isOpen={this.state.formModal}
-            toggle={() => this.toggleModal("formModal")}
-          >
-            <div className="modal-body p-0">
-              <Card className="bg-secondary shadow border-0">
-                <CardBody>
-                  <Form>
-                    <FormGroup>
-                      <label htmlFor="exampleFormControlInput1">API Key</label>
-                      <Input
-                        id="exampleFormControlInput1"
-                        type="text"
-                        value={"AHJRWGHWOFNANVAOHFASOFA"}
-                      />
-                    </FormGroup>
-                    <FormGroup>
-                      <label htmlFor="exampleFormControlInput1">
-                        API Secret
-                      </label>
-                      <Input
-                        id="exampleFormControlInput1"
-                        type={this.state.apiSecretShown ? "text" : "password"}
-                        value={"AHJRWGHWOFNANVAOHFASOFA"}
-                      />
-                      <InputGroupAddon addonType="append">
-                        <Button
-                          color="primary"
-                          outline
-                          onClick={() => {
-                            const newState = !this.state.apiSecretShown;
-                            this.setState({ apiSecretShown: newState });
-                          }}
-                        >
-                          {this.state.apiSecretShown ? "Hide" : "Show"}
-                        </Button>
-                      </InputGroupAddon>
-                    </FormGroup>
-                  </Form>
-                  <Button color="primary" type="button">
-                    Save changes
-                  </Button>
-                  <Button color="danger" type="button">
-                    Deactivate
-                  </Button>
-                </CardBody>
-              </Card>
-            </div>
-          </Modal>
+          {this.renderAPIInfoModal()}
         </Container>
       </>
     );

@@ -64,18 +64,18 @@ class AccountSetting extends Component {
                     <FormGroup>
                       <InputGroup
                         className={classnames("input-group-merge", {
-                          focused: this.state.companyName
+                          focused: this.state.company
                         })}
                       >
                         <Input
                           placeholder={t("company-name")}
                           type="text"
-                          name="companyName"
-                          value={values["companyName"]}
-                          onFocus={e => this.setState({ companyName: true })}
-                          onBlur={e => this.setState({ companyName: false })}
+                          name="company"
+                          value={values["company"]}
+                          onFocus={e => this.setState({ company: true })}
+                          onBlur={e => this.setState({ company: false })}
                           onChange={e => {
-                            setFieldValue("companyName", e.target.value);
+                            setFieldValue("company", e.target.value);
                           }}
                         />
                       </InputGroup>
