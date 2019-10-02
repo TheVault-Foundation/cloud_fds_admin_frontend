@@ -144,7 +144,8 @@ class Transaction extends Component {
   getTransactions = (page, sizePerPage = 10) => {
     const query = {
       page: page,
-      size: sizePerPage
+      size: sizePerPage,
+      sort: "createdAt_desc"
     };
 
     console.log("getTransactions - this.props.userId", this.props.userId);
