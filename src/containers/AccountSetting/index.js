@@ -35,7 +35,7 @@ class AccountSettingContainer extends Component {
     return (
       <Formik
         initialValues={{
-          companyName: user.company || "",
+          company: user.company || "",
           email: user.email || "",
           contactNumber: user.contactNumber || "",
           address: user.address || ""
