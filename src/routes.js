@@ -1,11 +1,12 @@
 import Tables from "./views/pages/tables/Tables.jsx";
 import Transaction from "./containers/Transaction";
 import ApiManagement from "./containers/ApiManagement";
+import UserManagement from "./containers/UserManagement";
 import AccountSetting from "./containers/AccountSetting";
 
 const routes = [
   {
-    path: "/api-management",
+    path: "/apis",
     name: "API Management",
     icon: "fa fa-table text-red",
     component: ApiManagement,
@@ -16,6 +17,13 @@ const routes = [
     name: "User Transaction",
     icon: "fa fa-user text-red",
     component: Transaction,
+    layout: "/admin"
+  },
+  {
+    path: "/users",
+    name: "User Management",
+    icon: "fa fa-table text-red",
+    component: UserManagement,
     layout: "/admin"
   },
   {

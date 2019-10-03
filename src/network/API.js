@@ -72,5 +72,8 @@ API.getUserInfo = userId => {
   return API.instance.get(`admin/users/${userId}`);
 };
 
+API.getUsers = (query) => {
+  return API.instance.get(`admin/users`, { params: query});
+};
 
 export default API;
