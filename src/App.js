@@ -40,6 +40,10 @@ const DashBoard = asyncComponent(() => {
   return import("./containers/DashBoard/Loadable");
 });
 
+const ForgotPassword = asyncComponent(() => {
+  return import("./containers/ForgotPassword/Loadable");
+});
+
 class App extends Component {
 
   render() {
@@ -48,6 +52,7 @@ class App extends Component {
         <Route exact path="/" component={HomePage} />
         <Route path="/login" component={LoginPage} />
         <Route path="/signup" component={SignUpPage} />
+        <Route path="/forgot-password" component={ForgotPassword} />
         <Route path="/admin" render={props => <DashBoard {...props} />} />
         <Redirect to="/" />
       </Switch>

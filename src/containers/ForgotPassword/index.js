@@ -5,11 +5,11 @@ import { withNamespaces } from "react-i18next";
 import { compose } from "recompose";
 import { Formik } from "formik";
 import { pathOr, path } from "ramda";
-import { login } from "../../redux/actions";
+import API from "../../network/API"
 
-import LoginPage from "../../components/LoginPage";
+import ForgotPassword from "../../components/ForgotPassword";
 
-class LoginPageContainer extends Component {
+class ForgotPasswordContainer extends Component {
   state = {
     status: "",
     message: ""
@@ -25,7 +25,7 @@ class LoginPageContainer extends Component {
       message: pathOr("", ["location", "state", "message"], this.props)
     });
     this.props.history.replace({
-      pathname: "/login",
+      pathname: "/forgot-password",
       state: {}
     });
   }
@@ -34,23 +34,9 @@ class LoginPageContainer extends Component {
     document.body.classList.remove("bg-default");
   }
 
-  goToSignUpPage = () => {
-    this.props.history.push("/signup");
-  };
-
-  signIn = () => {
-    console.log("Login-Form", this.emailRef.text);
-  };
-
-  onClickSignIn = () => {};
-
-  onClickForgotPassword = () => {
-    this.props.history.push("/forgot-password");
-  };
-
-  onClickCreateNewAccount = () => {
-    this.props.history.push("/signup");
-  };
+  onReturnLoginClick = () => {
+    this.props.history.push("/login");
+  }
 
   handleSubmit = (values, ...rest) => {};
 
@@ -60,22 +46,18 @@ class LoginPageContainer extends Component {
 
     return (
       <Formik
-        initialValues={{ username: "", password: "" }}
+        initialValues={{ email: "" }}
         validateOnChange={false}
         validateOnBlur={false}
         validateOnSubmit
         validate={values => {
           let errors = {};
-          if (!values.username) {
-            errors.username = "Required";
+          if (!values.email) {
+            errors.email = "Required";
           } else if (
-            !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(values.username)
+            !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(values.email)
           ) {
-            // errors.email = "Invalid email address";
-          }
-
-          if (!values.password) {
-            errors.password = "Required";
+            errors.email = "Invalid email address";
           }
 
           console.log(errors);
@@ -84,24 +66,20 @@ class LoginPageContainer extends Component {
         onSubmit={(values, { setSubmitting }) => {
           this.setState({ message: "" });
 
-          this.props.login(values, response => {
+          API.forgotPassword(values, response => {
             setSubmitting(false);
 
             switch (response.status) {
               case 200:
                 this.setState({
                   status: "success",
-                  message: "Login successfully"
+                  message: t("submit-success-message")
                 });
-                setTimeout(() => {
-                  this.props.history.push("/admin");
-                }, 2000);
                 break;
               case 400:
-                const message = path(["data", "error", "message"], response) || "Invalid username or password"
                 this.setState({
                   status: "danger",
-                  message: message
+                  message: "Invalid email"
                 });
                 break;
               default:
@@ -111,13 +89,12 @@ class LoginPageContainer extends Component {
         }}
       >
         {formik => (
-          <LoginPage
+          <ForgotPassword
             formik={formik}
             t={t}
-            onClickForgotPassword={this.onClickForgotPassword}
-            onClickCreateNewAccount={this.onClickCreateNewAccount}
             status={status}
             message={message}
+            onReturnLoginClick={this.onReturnLoginClick}
           />
         )}
       </Formik>
@@ -127,17 +104,16 @@ class LoginPageContainer extends Component {
 
 const mapStateToProps = state => {
   return {
-    loggedIn: false
   };
 };
 
 export default compose(
-  withNamespaces("login", { wait: true }),
+  withNamespaces("forgot-password", { wait: true }),
   withRouter,
   connect(
     mapStateToProps,
     {
-      login
+      
     }
   )
-)(LoginPageContainer);
+)(ForgotPasswordContainer);

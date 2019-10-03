@@ -76,4 +76,8 @@ API.getUsers = (query) => {
   return API.instance.get(`admin/users`, { params: query});
 };
 
+API.forgotPassword = (body) => {
+  return API.instance.post("admin/users/forgotPassword", body);
+};
+
 export default API;
