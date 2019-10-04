@@ -58,6 +58,8 @@ class AdminNavbar extends React.Component {
   render() {
     const { user } = this.props;
 
+    let avatar = `https://avatars.dicebear.com/v2/initials/${user.company}.svg`;
+
     return (
       <>
         <Navbar
@@ -388,7 +390,7 @@ class AdminNavbar extends React.Component {
                       <span className="avatar avatar-sm rounded-circle">
                         <img
                           alt="..."
-                          src={require("assets/img/theme/team-4.jpg")}
+                          src={avatar}
                         />
                       </span>
                       <Media className="ml-2 d-none d-lg-block">
