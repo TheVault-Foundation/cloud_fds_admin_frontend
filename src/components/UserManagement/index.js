@@ -1,33 +1,17 @@
 import React, { Component } from "react";
-// nodejs library that concatenates classes
-import classnames from "classnames";
 // reactstrap components
 import {
-  Badge,
   Button,
   Card,
   CardHeader,
   CardFooter,
   CardBody,
-  DropdownMenu,
-  DropdownItem,
-  DropdownToggle,
   Form,
   FormGroup,
-  InputGroupAddon,
   Input,
   CustomInput,
-  UncontrolledDropdown,
-  Media,
-  Pagination,
-  PaginationItem,
-  PaginationLink,
-  Progress,
-  Table,
   Container,
   Row,
-  Col,
-  UncontrolledTooltip,
   Modal,
   ModalFooter,
   ModalBody
@@ -36,17 +20,20 @@ import {
 import SimpleHeader from "components/Headers/SimpleHeader.jsx";
 import BootstrapTable from "react-bootstrap-table-next";
 import paginationFactory from "react-bootstrap-table2-paginator";
-import ToolkitProvider, { Search } from "react-bootstrap-table2-toolkit";
-import API from "../../network/API";
 import { path } from "ramda";
-const { SearchBar } = Search;
+
+import API from "../../network/API";
+import { LoadingIndication } from "components/Indication/LoadingIndication"
+import { NoDataIndication } from "components/Indication/NoDataIndication"
+
 const UserTable = ({
   columns,
   data,
   page,
   sizePerPage,
   onTableChange,
-  totalSize
+  totalSize,
+  loading = false
 }) => (
   <div style={{ maxWidth: "100%", overflow: "scroll" }}>
     <BootstrapTable
@@ -88,18 +75,8 @@ const UserTable = ({
         )
       })}
       onTableChange={onTableChange}
-      noDataIndication={() => <NoDataIndication />}
+      noDataIndication={() => !loading ? <NoDataIndication /> : <LoadingIndication />}
     />
-  </div>
-);
-
-const NoDataIndication = () => (
-  <div className="spinner">
-    <div className="rect1" />
-    <div className="rect2" />
-    <div className="rect3" />
-    <div className="rect4" />
-    <div className="rect5" />
   </div>
 );
 
@@ -111,7 +88,8 @@ class UserManagement extends Component {
     apiModalShown: false,
     userConfirmModalShown: false,
     selectedUserId: null,
-    selectedUserStatus: false
+    selectedUserStatus: false,
+    loading: false
   };
 
   componentDidMount() {
@@ -150,6 +128,7 @@ class UserManagement extends Component {
     API.getUsers(query)
       .then(response => {
         console.log("getUsers", response);
+        this.setState({loading: false})
         if (response.status === 200) {
           // Success
           const users = path(["data", "items"], response);
@@ -159,18 +138,22 @@ class UserManagement extends Component {
       })
       .catch(e => {
         console.log(e);
+        this.setState({ loading: false})
       });
 
-    this.setState({ users: [] });
+    this.setState({ users: [], loading: true });
   };
 
   updateUserStatus = (userId, currentStatus) => {
     const { page, sizePerPage } = this.state;
-    this.setState({ users: [] });
+    this.setState({ users: [], loading: true });
     API.updateUser(userId, { isActive: !currentStatus }).then(response => {
       if (response.status === 204) {
         this.getUsers(page, sizePerPage);
       }
+    }).catch(e => {
+      console.log(e);
+      this.setState({loading: false})
     });
   };
 
@@ -213,6 +196,11 @@ class UserManagement extends Component {
           isActive: false
         });
       }
+    }).catch(e => {
+      console.log(e);
+      this.setState({
+        loading: false
+      })
     });
   };
 
@@ -237,7 +225,7 @@ class UserManagement extends Component {
             })
           }
         >
-          <i class="fa fa-ban" aria-hidden="true"></i>
+          <i className="fa fa-ban" aria-hidden="true"></i>
         </Button>
         <Button
           color="default"
@@ -253,7 +241,7 @@ class UserManagement extends Component {
             })
           }
         >
-          <i class="fa fa-check-circle" aria-hidden="true"></i>
+          <i className="fa fa-check-circle" aria-hidden="true"></i>
         </Button>
         <Button
           color="default"
@@ -264,7 +252,7 @@ class UserManagement extends Component {
             this.setState({ ...row, apiModalShown: true });
           }}
         >
-          <i class="fa fa-eye" aria-hidden="true"></i>
+          <i className="fa fa-eye" aria-hidden="true"></i>
         </Button>
       </div>
     );
@@ -445,7 +433,7 @@ class UserManagement extends Component {
   };
 
   render() {
-    const { users = [], count, page, sizePerPage } = this.state;
+    const { users = [], count, page, sizePerPage, loading } = this.state;
 
     console.log("users", users);
 
@@ -462,6 +450,7 @@ class UserManagement extends Component {
                 </CardHeader>
 
                 <UserTable
+                  loading={loading}
                   bootstrap4={true}
                   bordered={false}
                   data={users}

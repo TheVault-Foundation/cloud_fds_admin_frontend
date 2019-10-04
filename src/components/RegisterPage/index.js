@@ -270,6 +270,7 @@ class RegisterPage extends Component {
                         color="info"
                         type="button"
                         onClick={submitForm}
+                        disabled={isSubmitting}
                       >
                         {t("create-account")}
                       </Button>

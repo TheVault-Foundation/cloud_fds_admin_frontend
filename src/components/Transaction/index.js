@@ -3,34 +3,22 @@ import React, { Component } from "react";
 import classnames from "classnames";
 // reactstrap components
 import {
-  Badge,
-  Button,
   Card,
   CardHeader,
   CardFooter,
-  DropdownMenu,
-  DropdownItem,
-  DropdownToggle,
-  UncontrolledDropdown,
-  Media,
-  Pagination,
-  PaginationItem,
-  PaginationLink,
-  Progress,
-  Table,
   Container,
   Row,
-  Col,
-  UncontrolledTooltip
 } from "reactstrap";
 // core components
 import SimpleHeader from "components/Headers/SimpleHeader.jsx";
 import BootstrapTable from "react-bootstrap-table-next";
 import paginationFactory from "react-bootstrap-table2-paginator";
-import ToolkitProvider, { Search } from "react-bootstrap-table2-toolkit";
-import API from "../../network/API";
 import { path } from "ramda";
-const { SearchBar } = Search;
+
+import API from "../../network/API";
+
+import { LoadingIndication } from "components/Indication/LoadingIndication"
+import { NoDataIndication } from "components/Indication/NoDataIndication"
 
 const columns = [
   {
@@ -69,7 +57,8 @@ const TransactionTable = ({
   page,
   sizePerPage,
   onTableChange,
-  totalSize
+  totalSize,
+  loading = false
 }) => (
   <div style={{maxWidth: '100%', overflow: 'scroll'}}>
     <BootstrapTable
@@ -111,18 +100,8 @@ const TransactionTable = ({
         )
       })}
       onTableChange={onTableChange}
-      noDataIndication={() => <NoDataIndication />}
+      noDataIndication={() => !loading ? <NoDataIndication /> : <LoadingIndication />}
     />
-  </div>
-);
-
-const NoDataIndication = () => (
-  <div className="spinner">
-    <div className="rect1" />
-    <div className="rect2" />
-    <div className="rect3" />
-    <div className="rect4" />
-    <div className="rect5" />
   </div>
 );
 
@@ -130,7 +109,8 @@ class Transaction extends Component {
   state = {
     transactions: [],
     page: 1,
-    sizePerPage: 10
+    sizePerPage: 10, 
+    loading: false
   };
 
   componentDidMount() {
@@ -151,9 +131,11 @@ class Transaction extends Component {
     console.log("getTransactions - this.props.userId", this.props.userId);
     console.log("getTransactions - page", page);
 
+    this.setState({ transactions: [], loading: true})
     API.getTransactions(this.props.userId, query)
       .then(response => {
         console.log("getTransactions", response);
+        this.setState({loading: false})
         if (response.status === 200) {
           // Success
           const transactions = path(["data", "items"], response);
@@ -163,22 +145,14 @@ class Transaction extends Component {
       })
       .catch(e => {
         console.log(e);
+        this.setState({
+          loading: false
+        })
       });
-
-    this.setState({ transactions: [] });
-  };
-
-  // Implement startWith instead of contain
-  customMatchFunc = ({ searchText, value, column, row }) => {
-    console.log("customMatchFunc", searchText);
-    if (typeof value !== "undefined") {
-      return value.startsWith(searchText);
-    }
-    return false;
   };
 
   render() {
-    const { transactions = [], count, page, sizePerPage } = this.state;
+    const { transactions = [], count, page, sizePerPage, loading } = this.state;
 
     console.log("transactions", transactions);
 
@@ -202,6 +176,7 @@ class Transaction extends Component {
                   sizePerPage={sizePerPage}
                   totalSize={count}
                   onTableChange={this.handleTableChange}
+                  loading={loading}
                 />
 
                 <CardFooter className="py-4"></CardFooter>

@@ -15,7 +15,7 @@ const routes = [
   {
     path: "/transaction",
     name: "User Transaction",
-    icon: "fa fa-user text-red",
+    icon: "fa fa-bars text-red",
     component: Transaction,
     layout: "/admin"
   },

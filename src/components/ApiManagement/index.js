@@ -1,6 +1,4 @@
 import React, { Component } from "react";
-// nodejs library that concatenates classes
-import classnames from "classnames";
 // reactstrap components
 import {
   Button,
@@ -24,6 +22,8 @@ import paginationFactory from "react-bootstrap-table2-paginator";
 import { path, pathOr } from "ramda";
 
 import API from "../../network/API";
+import { LoadingIndication } from "components/Indication/LoadingIndication"
+import { NoDataIndication } from "components/Indication/NoDataIndication"
 
 const ApiTable = ({
   columns,
@@ -31,7 +31,8 @@ const ApiTable = ({
   page,
   sizePerPage,
   onTableChange,
-  totalSize
+  totalSize,
+  loading = false
 }) => (
   <div style={{ maxWidth: "100%", overflow: "scroll" }}>
     <BootstrapTable
@@ -73,18 +74,8 @@ const ApiTable = ({
         )
       })}
       onTableChange={onTableChange}
-      noDataIndication={() => <NoDataIndication />}
+      noDataIndication={() => !loading ? <NoDataIndication /> : <LoadingIndication />}
     />
-  </div>
-);
-
-const NoDataIndication = () => (
-  <div className="spinner">
-    <div className="rect1" />
-    <div className="rect2" />
-    <div className="rect3" />
-    <div className="rect4" />
-    <div className="rect5" />
   </div>
 );
 
@@ -94,7 +85,8 @@ class ApiManagement extends Component {
     apiSecretShown: false,
     apiModalShown: false,
     page: 1,
-    sizePerPage: 10
+    sizePerPage: 10,
+    loading: false
   };
 
   componentDidMount() {
@@ -117,8 +109,9 @@ class ApiManagement extends Component {
     const userId = path(["id"], user);
 
     if (userId) {
-      this.setState({ apis: [] });
+      this.setState({ apis: [], loading: true });
       API.getUserApi(userId, query).then(response => {
+        this.setState({loading: false})
         if (response.status === 200) {
           const apis = pathOr([], ["data", "items"], response);
           const count = pathOr([], ["data", "count"], response);
@@ -126,6 +119,9 @@ class ApiManagement extends Component {
           const activateAPIs = apis.filter(api => api.isActive);
           this.setState({ apis: activateAPIs, count, page });
         }
+      }).catch(e => {
+        console.log(e)
+        this.setState({loading: false})
       });
     }
   };
@@ -148,19 +144,24 @@ class ApiManagement extends Component {
     const { user } = this.props;
     const { page, sizePerPage } = this.state;
     const userId = path(["id"], user);
-    this.setState({ apis: [] });
+    this.setState({ apis: [], loading: true });
     API.createUserApi(userId).then(response => {
       if (response.status === 200) {
         this.loadUserApi(page, sizePerPage);
       }
-    });
+    }).catch(e => {
+      console.log(e);
+      this.setState({
+        loading: false
+      })
+    });;
   };
 
   deactivateUserApi = apiId => {
     const { user } = this.props;
     const { page, sizePerPage } = this.state;
     const userId = path(["id"], user);
-    this.setState({ apis: [] });
+    this.setState({ apis: [], loading: true });
     API.updateUserApi(userId, apiId, { isActive: false }).then(response => {
       if (response.status === 204) {
         this.loadUserApi(page, sizePerPage);
@@ -171,7 +172,7 @@ class ApiManagement extends Component {
   updateUserApi = () => {
     const { id: userId } = this.props.user;
     const { id: appId, apiName, page, sizePerPage } = this.state;
-    this.setState({ users: [] });
+    this.setState({ users: [], loading: true });
     API.updateUserApi(userId, appId, {
       apiName
     }).then(response => {
@@ -205,7 +206,7 @@ class ApiManagement extends Component {
           type="button"
           onClick={() => this.deactivateUserApi(apiId)}
         >
-          <i class="fa fa-ban" aria-hidden="true"></i>
+          <i className="fa fa-ban" aria-hidden="true"></i>
         </Button>
         <Button
           color="default"
@@ -216,7 +217,7 @@ class ApiManagement extends Component {
             this.setState({ ...row, apiModalShown: true });
           }}
         >
-          <i class="fa fa-eye" aria-hidden="true"></i>
+          <i className="fa fa-eye" aria-hidden="true"></i>
         </Button>
       </div>
     );
@@ -348,7 +349,7 @@ class ApiManagement extends Component {
   };
 
   render() {
-    const { apis = [], message, status, count, sizePerPage, page } = this.state;
+    const { apis = [], message, status, count, sizePerPage, page, loading } = this.state;
     return (
       <>
         <SimpleHeader name="Tables" parentName="Tables" />
@@ -414,6 +415,7 @@ class ApiManagement extends Component {
                   sizePerPage={sizePerPage}
                   totalSize={count}
                   onTableChange={this.handleTableChange}
+                  loading={loading}
                 />
               </Card>
             </div>
