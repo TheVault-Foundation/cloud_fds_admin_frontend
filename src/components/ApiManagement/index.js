@@ -25,8 +25,6 @@ import { path, pathOr } from "ramda";
 
 import API from "../../network/API";
 
-
-
 const ApiTable = ({
   columns,
   data,
@@ -35,7 +33,7 @@ const ApiTable = ({
   onTableChange,
   totalSize
 }) => (
-  <div style={{maxWidth: '100%', overflow: 'scroll'}}>
+  <div style={{ maxWidth: "100%", overflow: "scroll" }}>
     <BootstrapTable
       remote
       keyField="id"
@@ -80,7 +78,6 @@ const ApiTable = ({
   </div>
 );
 
-
 const NoDataIndication = () => (
   <div className="spinner">
     <div className="rect1" />
@@ -120,6 +117,7 @@ class ApiManagement extends Component {
     const userId = path(["id"], user);
 
     if (userId) {
+      this.setState({ apis: [] });
       API.getUserApi(userId, query).then(response => {
         if (response.status === 200) {
           const apis = pathOr([], ["data", "items"], response);
@@ -166,6 +164,24 @@ class ApiManagement extends Component {
     API.updateUserApi(userId, apiId, { isActive: false }).then(response => {
       if (response.status === 204) {
         this.loadUserApi(page, sizePerPage);
+      }
+    });
+  };
+
+  updateUserApi = () => {
+    const { id: userId } = this.props.user;
+    const { id: appId, apiName, page, sizePerPage } = this.state;
+    this.setState({ users: [] });
+    API.updateUserApi(userId, appId, {
+      apiName
+    }).then(response => {
+      if (response.status === 204) {
+        this.loadUserApi(page, sizePerPage);
+
+        this.setState({
+          id: null,
+          apiName: null,
+        });
       }
     });
   };
@@ -261,11 +277,18 @@ class ApiManagement extends Component {
               <Form>
                 <FormGroup>
                   <label htmlFor="apiName">API Name</label>
-                  <Input id="apiName" type="text" value={apiName} />
+                  <Input
+                    id="apiName"
+                    type="text"
+                    value={apiName}
+                    onChange={e => {
+                      this.setState({ apiName: e.target.value });
+                    }}
+                  />
                 </FormGroup>
                 <FormGroup>
                   <label htmlFor="apiKey">API Key</label>
-                  <Input id="apiKey" type="text" value={apiKey} />
+                  <Input id="apiKey" type="text" value={apiKey} disabled />
                 </FormGroup>
                 <FormGroup>
                   <label htmlFor="apiSecret">API Secret</label>
@@ -273,6 +296,7 @@ class ApiManagement extends Component {
                     id="apiSecret"
                     type={this.state.apiSecretShown ? "text" : "password"}
                     value={apiSecret}
+                    disabled
                   />
                   <InputGroupAddon addonType="append">
                     <Button
@@ -288,17 +312,28 @@ class ApiManagement extends Component {
                 </FormGroup>
                 <FormGroup>
                   <label htmlFor="createdAt">Created At</label>
-                  <Input id="createdAt" type="text" value={createdAt} />
+                  <Input
+                    id="createdAt"
+                    type="text"
+                    value={createdAt}
+                    disabled
+                  />
                 </FormGroup>
                 <FormGroup>
                   <label htmlFor="createdBy">Created By</label>
-                  <Input id="createdBy" type="text" value={createdBy} />
+                  <Input
+                    id="createdBy"
+                    type="text"
+                    value={createdBy}
+                    disabled
+                  />
                 </FormGroup>
               </Form>
               <Button
                 color="primary"
                 type="button"
                 onClick={() => {
+                  this.updateUserApi();
                   const newState = !this.state.apiModalShown;
                   this.setState({ apiModalShown: newState });
                 }}
@@ -349,6 +384,11 @@ class ApiManagement extends Component {
                   bordered={false}
                   data={apis}
                   columns={[
+                    {
+                      dataField: "apiName",
+                      text: "API Name",
+                      searchable: true,
+                    },
                     {
                       dataField: "apiKey",
                       text: "API Key",

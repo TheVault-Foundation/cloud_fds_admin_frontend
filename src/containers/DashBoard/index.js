@@ -7,24 +7,37 @@ import { logout } from "redux/actions";
 
 class DashBoardContainer extends Component {
   componentDidMount() {
-      if (!this.props.isAuthenticated) {
-          this.props.history.push("/");
-      }
+    if (!this.props.isAuthenticated) {
+      this.props.history.push("/");
+    }
   }
 
   onLogoutClick = () => {
     this.props.logout();
     this.props.history.push("/");
+  };
+
+  onSettingItemClick = () => {
+    this.props.history.push("/admin/settings");
   }
 
   render() {
-    return <DashBoard {...this.props} onLogoutClick={this.onLogoutClick} />;
+    const { user } = this.props;
+    return (
+      <DashBoard
+        {...this.props}
+        onLogoutClick={this.onLogoutClick}
+        user={user}
+        onSettingItemClick={this.onSettingItemClick}
+      />
+    );
   }
 }
 
 const mapStateToProps = state => {
   return {
-      isAuthenticated: path(["auth", "data", "access_token"], state)
+    isAuthenticated: path(["auth", "data", "access_token"], state),
+    user: path(["auth", "data"], state)
   };
 };
 
@@ -32,7 +45,7 @@ export default withRouter(
   connect(
     mapStateToProps,
     {
-        logout
+      logout
     }
   )(DashBoardContainer)
 );

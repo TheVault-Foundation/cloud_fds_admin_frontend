@@ -24,7 +24,6 @@ class ApiManagementContainer extends Component {
 const mapStateToProps = state => {
   return {
     user: path(["auth", "data"], state)
-
   };
 };
 

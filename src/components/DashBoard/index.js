@@ -4,7 +4,8 @@ import AdminNavbar from "components/Navbars/AdminNavbar.jsx";
 import AdminFooter from "components/Footers/AdminFooter.jsx";
 import Sidebar from "components/Sidebar/Sidebar.jsx";
 
-import routes from "routes.js";
+import userRoutes from "routes.js";
+import adminRoutes from "routes.admin.js";
 
 class DashBoard extends Component {
   state = {
@@ -57,6 +58,9 @@ class DashBoard extends Component {
   };
 
   render() {
+    const { user } = this.props;
+    const routes = user.roleType === "Admin" ? adminRoutes : userRoutes
+
     return (
       <>
         <Sidebar
@@ -73,6 +77,8 @@ class DashBoard extends Component {
           <AdminNavbar
             {...this.props}
             brandText={this.getBrandText(this.props.location.pathname)}
+            user={user}
+            onSettingItemClick={this.props.onSettingItemClick}
           />
           <Switch>{this.getRoutes(routes)}</Switch>
           <AdminFooter />

@@ -15,8 +15,15 @@ const routes = [
   {
     path: "/transaction",
     name: "User Transaction",
-    icon: "fa fa-user text-red",
+    icon: "fa fa-bars text-red",
     component: Transaction,
+    layout: "/admin"
+  },
+  {
+    path: "/users",
+    name: "User Management",
+    icon: "fa fa-user text-red",
+    component: UserManagement,
     layout: "/admin"
   },
   {

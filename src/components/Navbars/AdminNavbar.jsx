@@ -56,6 +56,8 @@ class AdminNavbar extends React.Component {
     }, 500);
   };
   render() {
+    const { user } = this.props;
+
     return (
       <>
         <Navbar
@@ -95,7 +97,7 @@ class AdminNavbar extends React.Component {
               </Form>
 
               <Nav className="align-items-center ml-md-auto" navbar>
-                <NavItem className="d-xl-none">
+                {/* <NavItem className="d-xl-none">
                   <div
                     className={classnames(
                       "pr-3 sidenav-toggler",
@@ -371,8 +373,14 @@ class AdminNavbar extends React.Component {
                       </Col>
                     </Row>
                   </DropdownMenu>
-                </UncontrolledDropdown>
+                </UncontrolledDropdown> */} 
               </Nav>
+              
+              
+              
+              
+              
+              
               <Nav className="align-items-center ml-auto ml-md-0" navbar>
                 <UncontrolledDropdown nav>
                   <DropdownToggle className="nav-link pr-0" color="" tag="a">
@@ -385,7 +393,7 @@ class AdminNavbar extends React.Component {
                       </span>
                       <Media className="ml-2 d-none d-lg-block">
                         <span className="mb-0 text-sm font-weight-bold">
-                          John Snow
+                          {user.company}
                         </span>
                       </Media>
                     </Media>
@@ -396,14 +404,7 @@ class AdminNavbar extends React.Component {
                     </DropdownItem>
                     <DropdownItem
                       href="#pablo"
-                      onClick={e => e.preventDefault()}
-                    >
-                      <i className="ni ni-single-02" />
-                      <span>My profile</span>
-                    </DropdownItem>
-                    <DropdownItem
-                      href="#pablo"
-                      onClick={e => e.preventDefault()}
+                      onClick={this.props.onSettingItemClick}
                     >
                       <i className="ni ni-settings-gear-65" />
                       <span>Settings</span>
