@@ -5,18 +5,25 @@ import { withNamespaces } from "react-i18next";
 import { compose } from "recompose";
 import { Formik } from "formik";
 import { pathOr, path } from "ramda";
+import qs from "query-string";
+
+import ResetPassword from "../../components/ResetPassword";
 import API from "../../network/API";
 
-import ForgotPassword from "../../components/ForgotPassword";
-
-class ForgotPasswordContainer extends Component {
+class ResetPasswordContainer extends Component {
   state = {
     status: "",
-    message: ""
+    message: "",
+    token: null
   };
 
   componentDidMount() {
     document.body.classList.add("bg-default");
+
+    const query = qs.parse(this.props.location.search);
+    if (query.token) {
+      this.setState({token: query.token})
+    }
   }
 
   componentWillMount() {
@@ -25,7 +32,7 @@ class ForgotPasswordContainer extends Component {
       message: pathOr("", ["location", "state", "message"], this.props)
     });
     this.props.history.replace({
-      pathname: "/forgot-password",
+      pathname: "/reset-password",
       state: {}
     });
   }
@@ -33,10 +40,6 @@ class ForgotPasswordContainer extends Component {
   componentWillUnmount() {
     document.body.classList.remove("bg-default");
   }
-
-  onReturnLoginClick = () => {
-    this.props.history.push("/login");
-  };
 
   handleSubmit = (values, ...rest) => {};
 
@@ -46,18 +49,23 @@ class ForgotPasswordContainer extends Component {
 
     return (
       <Formik
-        initialValues={{ email: "" }}
+        initialValues={{ password: "", confirm_password: "" }}
         validateOnChange={false}
         validateOnBlur={false}
         validateOnSubmit
         validate={values => {
           let errors = {};
-          if (!values.email) {
-            errors.email = "Required";
-          } else if (
-            !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(values.email)
-          ) {
-            errors.email = "Invalid email address";
+
+          if (!values.password) {
+            errors.password = "Required";
+          }
+
+          if (!values.confirm_password) {
+            errors.confirm_password = "Required";
+          }
+
+          if (values.password !== values.confirm_password) {
+            errors.confirm_password = t("password-not-match-message");
           }
 
           console.log(errors);
@@ -66,21 +74,24 @@ class ForgotPasswordContainer extends Component {
         onSubmit={(values, { setSubmitting }) => {
           this.setState({ message: "" });
 
-          API.forgotPassword(values)
+          API.resetPassword(this.state.token, values)
             .then(response => {
               setSubmitting(false);
 
               switch (response.status) {
-                case 201:
-                  this.setState({
-                    status: "success",
-                    message: path(["data", "message"], response) || t("success-message")
+                case 200:
+                  this.props.history.push({
+                    pathname: "/login",
+                    state: {
+                      status: "success",
+                      message: path(["data", "message"], response) || "Reset password is successfully"
+                    }
                   });
                   break;
                 case 400:
                   this.setState({
                     status: "danger",
-                    message: path(["data", "message"], response) || "Invalid password"
+                    message: path(["data", "message"], response) 
                   });
                   break;
                 default:
@@ -94,12 +105,11 @@ class ForgotPasswordContainer extends Component {
         }}
       >
         {formik => (
-          <ForgotPassword
+          <ResetPassword
             formik={formik}
             t={t}
             status={status}
             message={message}
-            onReturnLoginClick={this.onReturnLoginClick}
           />
         )}
       </Formik>
@@ -112,10 +122,10 @@ const mapStateToProps = state => {
 };
 
 export default compose(
-  withNamespaces("forgot-password", { wait: true }),
+  withNamespaces("reset-password", { wait: true }),
   withRouter,
   connect(
     mapStateToProps,
     {}
   )
-)(ForgotPasswordContainer);
+)(ResetPasswordContainer);

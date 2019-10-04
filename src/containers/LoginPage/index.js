@@ -5,6 +5,8 @@ import { withNamespaces } from "react-i18next";
 import { compose } from "recompose";
 import { Formik } from "formik";
 import { pathOr, path } from "ramda";
+import qs from "query-string";
+
 import { login } from "../../redux/actions";
 
 import LoginPage from "../../components/LoginPage";
@@ -17,6 +19,21 @@ class LoginPageContainer extends Component {
 
   componentDidMount() {
     document.body.classList.add("bg-default");
+
+    const query = qs.parse(this.props.location.search);
+    if (query.verify) {
+      if (query.verify === true) {
+        this.setState({
+          status: "success",
+          message: "Your account has been activated successfully"
+        });
+      } else {
+        this.setState({
+          status: "danger",
+          message: "Oops! Something went wrong. Please contact to admin"
+        });
+      }
+    }
   }
 
   componentWillMount() {
@@ -95,10 +112,12 @@ class LoginPageContainer extends Component {
                 });
                 setTimeout(() => {
                   this.props.history.push("/admin");
-                }, 2000);
+                }, 1000);
                 break;
               case 400:
-                const message = path(["data", "error", "message"], response) || "Invalid username or password"
+                const message =
+                  path(["data", "error", "message"], response) ||
+                  "Invalid username or password";
                 this.setState({
                   status: "danger",
                   message: message

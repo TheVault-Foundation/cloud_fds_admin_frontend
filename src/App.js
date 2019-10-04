@@ -44,6 +44,10 @@ const ForgotPassword = asyncComponent(() => {
   return import("./containers/ForgotPassword/Loadable");
 });
 
+const ResetPassword = asyncComponent(() => {
+  return import("./containers/ResetPassword/Loadable");
+});
+
 class App extends Component {
 
   render() {
@@ -53,6 +57,7 @@ class App extends Component {
         <Route path="/login" component={LoginPage} />
         <Route path="/signup" component={SignUpPage} />
         <Route path="/forgot-password" component={ForgotPassword} />
+        <Route path="/reset-password" component={ResetPassword} />
         <Route path="/admin" render={props => <DashBoard {...props} />} />
         <Redirect to="/" />
       </Switch>

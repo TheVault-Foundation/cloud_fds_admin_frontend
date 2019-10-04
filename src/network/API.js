@@ -77,7 +77,11 @@ API.getUsers = (query) => {
 };
 
 API.forgotPassword = (body) => {
-  return API.instance.post("admin/users/forgotPassword", body);
+  return API.instance.post("admin/password/request_token", body);
+};
+
+API.resetPassword = (token, body) => {
+  return API.instance.post(`admin/password/verify_token/${token}`, body);
 };
 
 export default API;

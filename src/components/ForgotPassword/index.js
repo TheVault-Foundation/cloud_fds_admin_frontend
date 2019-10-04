@@ -33,7 +33,6 @@ class ForgotPassword extends Component {
   }
 
   renderSuccessView = () => {
-
     const {
       t,
       message,
@@ -88,8 +87,8 @@ class ForgotPassword extends Component {
       setFieldValue
     } = formik;
 
-    // If status === 200, submit successfully, then return successful view
-    if (status === 200) {
+    // If status === 201, submit successfully, then return successful view
+    if (status === "success") {
       return this.renderSuccessView();
     }
 
