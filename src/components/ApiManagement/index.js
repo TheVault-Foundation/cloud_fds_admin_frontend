@@ -10,6 +10,7 @@ import {
   Modal,
   Form,
   FormGroup,
+  FormFeedback,
   InputGroupAddon,
   CardBody,
   Input,
@@ -84,6 +85,8 @@ class ApiManagement extends Component {
     apis: [],
     apiSecretShown: false,
     apiModalShown: false,
+    createNewAPIModalShown: false,
+    createNewAPIError: false,
     page: 1,
     sizePerPage: 10,
     loading: false
@@ -142,10 +145,11 @@ class ApiManagement extends Component {
     }
 
     const { user } = this.props;
-    const { page, sizePerPage } = this.state;
+    const { apiName, page, sizePerPage } = this.state;
     const userId = path(["id"], user);
-    this.setState({ apis: [], loading: true });
-    API.createUserApi(userId).then(response => {
+    this.setState({ apis: [], loading: true, createNewAPIModalShown: false });
+    API.createUserApi(userId, { apiName }).then(response => {
+      this.setState({apiName: null})
       if (response.status === 200) {
         this.loadUserApi(page, sizePerPage);
       }
@@ -166,7 +170,12 @@ class ApiManagement extends Component {
       if (response.status === 204) {
         this.loadUserApi(page, sizePerPage);
       }
-    });
+    }).catch(e => {
+      console.log(e);
+      this.setState({
+        loading: false
+      })
+    });;
   };
 
   updateUserApi = () => {
@@ -184,7 +193,12 @@ class ApiManagement extends Component {
           apiName: null,
         });
       }
-    });
+    }).catch(e => {
+      console.log(e);
+      this.setState({
+        loading: false
+      })
+    });;
   };
 
   toggleModal = state => {
@@ -348,6 +362,64 @@ class ApiManagement extends Component {
     );
   };
 
+  renderCreateNewAPIModal = () => {
+    const { apiName, createNewAPIError } = this.state;
+
+    return (
+      <Modal
+        className="modal-dialog-centered"
+        size="lg"
+        isOpen={this.state.createNewAPIModalShown}
+        toggle={() => {
+          this.setState({ createNewAPIModalShown: !this.state.createNewAPIModalShown });
+        }}
+      >
+        <div className="modal-body p-0">
+          <Card className="bg-secondary shadow border-0">
+            <CardBody>
+              <Form>
+                <FormGroup>
+                  <label htmlFor="apiName">API Name</label>
+                  <Input
+                    id="apiName"
+                    type="text"
+                    value={apiName}
+                    onChange={e => {
+                      this.setState({ createNewAPIError: false, apiName: e.target.value });
+                    }}
+                    invalid={createNewAPIError}
+                  />
+
+                  {createNewAPIError && (
+                    <FormFeedback>API Name can't be empty</FormFeedback>
+                  )}
+                </FormGroup>
+              </Form>
+              <Button
+                color="primary"
+                type="button"
+                onClick={() => {
+                  if (!apiName) {
+                    this.setState({createNewAPIError: true})
+                    return;
+                  }
+
+                  if (!createNewAPIError) {
+                  this.createUserApi();
+                    const newState = !this.state.createNewAPIModalShown;
+                    this.setState({ createNewAPIModalShown: newState });
+                  }
+                }}
+              >
+                Create API Key
+              </Button>
+            </CardBody>
+          </Card>
+        </div>
+      </Modal>
+    );
+  };
+
   render() {
     const { apis = [], message, status, count, sizePerPage, page, loading } = this.state;
     return (
@@ -367,7 +439,9 @@ class ApiManagement extends Component {
                         className="btn-round btn-icon"
                         color="primary"
                         id="tooltip443412080"
-                        onClick={this.createUserApi}
+                        onClick={() => {
+                          this.setState({createNewAPIModalShown: true})
+                        }}
                       >
                         <span className="btn-inner--text">
                           Create a new API Key
@@ -422,6 +496,7 @@ class ApiManagement extends Component {
           </Row>
 
           {this.renderAPIInfoModal()}
+          {this.renderCreateNewAPIModal()}
         </Container>
       </>
     );

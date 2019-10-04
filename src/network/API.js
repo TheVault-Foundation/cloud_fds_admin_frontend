@@ -57,8 +57,8 @@ API.getUserApi = (userId, query) => {
   return API.instance.get(`admin/users/${userId}/userapi`, { params: query});
 }
 
-API.createUserApi = (userId) => {
-  return API.instance.post(`admin/users/${userId}/userapi`);
+API.createUserApi = (userId, body) => {
+  return API.instance.post(`admin/users/${userId}/userapi`, body);
 }
 
 API.updateUserApi = (userId, apiId, body) => {
