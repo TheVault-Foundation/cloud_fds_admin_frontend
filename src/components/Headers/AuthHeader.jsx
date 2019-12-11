@@ -13,12 +13,7 @@ class AuthHeader extends React.Component {
             <div className="header-body text-center mb-7">
               <Row className="justify-content-center">
                 <Col className="px-5" lg="6" md="8" xl="5">
-                  {this.props.title ? (
-                    <h1 className="text-white">{this.props.title}</h1>
-                  ) : null}
-                  {this.props.lead ? (
-                    <p className="text-lead text-white">{this.props.lead}</p>
-                  ) : null}
+                  <img src={require("../../assets/img/logo-full-white.png")} alt="" style={{width: 185, height: 40 }}/>
                 </Col>
               </Row>
             </div>
