@@ -259,7 +259,7 @@ class AddressManagement extends Component {
     );
   };
 
-  renderAPIInfoModal = () => {
+  renderAddressInfoModal = () => {
     const { address, currency, createdAt } = this.state;
 
     return (
@@ -315,7 +315,7 @@ class AddressManagement extends Component {
     );
   };
 
-  renderCreateNewAPIModal = () => {
+  renderCreateNewAddressModal = () => {
     const { address, currency, createNewAddressError } = this.state;
 
     return (
@@ -401,7 +401,7 @@ class AddressManagement extends Component {
                 <CardHeader className="border-0">
                   <Row>
                     <Col xs="6">
-                      <h3 className="mb-0">API Management</h3>
+                      <h3 className="mb-0">Address Management</h3>
                     </Col>
                     <Col className="text-right" xs="6">
                       <Button
@@ -462,8 +462,8 @@ class AddressManagement extends Component {
             </div>
           </Row>
 
-          {this.renderAPIInfoModal()}
-          {this.renderCreateNewAPIModal()}
+          {this.renderAddressInfoModal()}
+          {this.renderCreateNewAddressModal()}
         </Container>
       </>
     );

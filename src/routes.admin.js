@@ -15,7 +15,7 @@ const routes = [
   },
   {
     path: "/address",
-    name: "Address",
+    name: "Address Management",
     icon: "fa fa-cog text-red",
     component: AddressManagement,
     layout: "/admin"
