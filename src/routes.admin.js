@@ -2,6 +2,7 @@ import Tables from "./views/pages/tables/Tables.jsx";
 import Transaction from "./containers/Transaction";
 import ApiManagement from "./containers/ApiManagement";
 import AddressManagement from "./containers/AddressManagement";
+import WithdrawRequest from "./containers/WithdrawRequest";
 import UserManagement from "./containers/UserManagement";
 import AccountSetting from "./containers/AccountSetting";
 
@@ -18,6 +19,13 @@ const routes = [
     name: "Address Management",
     icon: "fa fa-cog text-red",
     component: AddressManagement,
+    layout: "/admin"
+  },
+  {
+    path: "/withdraw_request",
+    name: "Withdraw Request",
+    icon: "fa fa-cog text-red",
+    component: WithdrawRequest,
     layout: "/admin"
   },
   {
