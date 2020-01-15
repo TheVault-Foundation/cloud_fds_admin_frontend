@@ -84,9 +84,9 @@ class AddressManagement extends Component {
   state = {
     data: [],
     apiSecretShown: false,
-    apiModalShown: false,
-    createNewAPIModalShown: false,
-    createNewAPIError: false,
+    addressModalShown: false,
+    createNewAddressModalShown: false,
+    createNewAddressError: false,
     page: 1,
     sizePerPage: 10,
     loading: false
@@ -128,15 +128,15 @@ class AddressManagement extends Component {
     }
   };
 
-  createUserApi = () => {
+  createUserAddress = () => {
     const { user } = this.props;
-    const { apiName, page, sizePerPage } = this.state;
+    const { address, currency, page, sizePerPage } = this.state;
     const userId = path(["id"], user);
-    this.setState({ data: [], loading: true, createNewAPIModalShown: false });
-    API.createUserApi(userId, { apiName }).then(response => {
-      this.setState({apiName: null})
+    this.setState({ data: [], loading: true, createNewAddressModalShown: false });
+    API.createUserAddress(userId, { address, currency }).then(response => {
+      this.setState({address: null})
       if (response.status === 200) {
-        this.loadUserApi(page, sizePerPage);
+        this.loadUserAddress(page, sizePerPage);
       }
     }).catch(e => {
       console.log(e);
@@ -213,7 +213,7 @@ class AddressManagement extends Component {
           outline
           type="button"
           onClick={() => {
-            this.setState({ ...row, apiModalShown: true });
+            this.setState({ ...row, addressModalShown: true });
           }}
         >
           <i className="fa fa-eye" aria-hidden="true"></i>
@@ -248,7 +248,7 @@ class AddressManagement extends Component {
               outline
               type="button"
               onClick={() => {
-                this.setState({ ...api, apiModalShown: true });
+                this.setState({ ...api, addressModalShown: true });
               }}
             >
               Edit
@@ -260,15 +260,15 @@ class AddressManagement extends Component {
   };
 
   renderAPIInfoModal = () => {
-    const { apiName, apiKey, apiSecret, createdAt, createdBy } = this.state;
+    const { address, currency, createdAt } = this.state;
 
     return (
       <Modal
         className="modal-dialog-centered"
         size="lg"
-        isOpen={this.state.apiModalShown}
+        isOpen={this.state.addressModalShown}
         toggle={() => {
-          this.setState({ apiModalShown: !this.state.apiModalShown });
+          this.setState({ addressModalShown: !this.state.addressModalShown });
         }}
       >
         <div className="modal-body p-0">
@@ -276,39 +276,17 @@ class AddressManagement extends Component {
             <CardBody>
               <Form>
                 <FormGroup>
-                  <label htmlFor="apiName">API Name</label>
+                  <label htmlFor="address">Address</label>
                   <Input
-                    id="apiName"
+                    id="address"
                     type="text"
-                    value={apiName}
-                    onChange={e => {
-                      this.setState({ apiName: e.target.value });
-                    }}
-                  />
-                </FormGroup>
-                <FormGroup>
-                  <label htmlFor="apiKey">API Key</label>
-                  <Input id="apiKey" type="text" value={apiKey} disabled />
-                </FormGroup>
-                <FormGroup>
-                  <label htmlFor="apiSecret">API Secret</label>
-                  <Input
-                    id="apiSecret"
-                    type={this.state.apiSecretShown ? "text" : "password"}
-                    value={apiSecret}
+                    value={address}
                     disabled
                   />
-                  <InputGroupAddon addonType="append">
-                    <Button
-                      color="primary"
-                      onClick={() => {
-                        const newState = !this.state.apiSecretShown;
-                        this.setState({ apiSecretShown: newState });
-                      }}
-                    >
-                      {this.state.apiSecretShown ? "Hide" : "Show"}
-                    </Button>
-                  </InputGroupAddon>
+                </FormGroup>
+                <FormGroup>
+                  <label htmlFor="currency">Currency</label>
+                  <Input id="currency" type="text" value={currency} disabled />
                 </FormGroup>
                 <FormGroup>
                   <label htmlFor="createdAt">Created At</label>
@@ -319,26 +297,16 @@ class AddressManagement extends Component {
                     disabled
                   />
                 </FormGroup>
-                <FormGroup>
-                  <label htmlFor="createdBy">Created By</label>
-                  <Input
-                    id="createdBy"
-                    type="text"
-                    value={createdBy}
-                    disabled
-                  />
-                </FormGroup>
               </Form>
               <Button
                 color="primary"
                 type="button"
                 onClick={() => {
-                  this.updateUserApi();
-                  const newState = !this.state.apiModalShown;
-                  this.setState({ apiModalShown: newState });
+                  const newState = !this.state.addressModalShown;
+                  this.setState({ addressModalShown: newState });
                 }}
               >
-                Save changes
+                Close
               </Button>
             </CardBody>
           </Card>
@@ -348,15 +316,15 @@ class AddressManagement extends Component {
   };
 
   renderCreateNewAPIModal = () => {
-    const { apiName, createNewAPIError } = this.state;
+    const { address, currency, createNewAddressError } = this.state;
 
     return (
       <Modal
         className="modal-dialog-centered"
         size="lg"
-        isOpen={this.state.createNewAPIModalShown}
+        isOpen={this.state.createNewAddressModalShown}
         toggle={() => {
-          this.setState({ createNewAPIModalShown: !this.state.createNewAPIModalShown });
+          this.setState({ createNewAddressModalShown: !this.state.createNewAddressModalShown });
         }}
       >
         <div className="modal-body p-0">
@@ -364,19 +332,35 @@ class AddressManagement extends Component {
             <CardBody>
               <Form>
                 <FormGroup>
-                  <label htmlFor="apiName">API Name</label>
+                  <label htmlFor="address">Address</label>
                   <Input
-                    id="apiName"
+                    id="address"
                     type="text"
-                    value={apiName}
+                    value={address}
                     onChange={e => {
-                      this.setState({ createNewAPIError: false, apiName: e.target.value });
+                      this.setState({ createNewAddressError: false, address: e.target.value });
                     }}
-                    invalid={createNewAPIError}
+                    invalid={createNewAddressError}
                   />
 
-                  {createNewAPIError && (
-                    <FormFeedback>API Name can't be empty</FormFeedback>
+                  {createNewAddressError && (
+                    <FormFeedback>Address can't be empty</FormFeedback>
+                  )}
+                </FormGroup>
+                <FormGroup>
+                  <label htmlFor="address">Currency</label>
+                  <Input
+                    id="currency"
+                    type="text"
+                    value={currency}
+                    onChange={e => {
+                      this.setState({ createNewAddressError: false, currency: e.target.value });
+                    }}
+                    invalid={createNewAddressError}
+                  />
+
+                  {createNewAddressError && (
+                    <FormFeedback>Currency can't be empty</FormFeedback>
                   )}
                 </FormGroup>
               </Form>
@@ -384,19 +368,19 @@ class AddressManagement extends Component {
                 color="primary"
                 type="button"
                 onClick={() => {
-                  if (!apiName) {
-                    this.setState({createNewAPIError: true})
+                  if (!currency) {
+                    this.setState({createNewAddressError: true})
                     return;
                   }
 
-                  if (!createNewAPIError) {
-                  this.createUserApi();
-                    const newState = !this.state.createNewAPIModalShown;
-                    this.setState({ createNewAPIModalShown: newState });
+                  if (!createNewAddressError) {
+                  this.createUserAddress();
+                    const newState = !this.state.createNewAddressModalShown;
+                    this.setState({ createNewAddressModalShown: newState });
                   }
                 }}
               >
-                Create API Key
+                Create new Address
               </Button>
             </CardBody>
           </Card>
@@ -425,7 +409,7 @@ class AddressManagement extends Component {
                         color="primary"
                         id="tooltip443412080"
                         onClick={() => {
-                          this.setState({createNewAPIModalShown: true})
+                          this.setState({createNewAddressModalShown: true})
                         }}
                       >
                         <span className="btn-inner--text">

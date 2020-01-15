@@ -69,6 +69,10 @@ API.getUserAddress = (userId, query) => {
   return API.instance.get(`admin/users/${userId}/addresses`, { params: query});
 }
 
+API.createUserAddress = (userId, body) => {
+  return API.instance.post(`admin/users/${userId}/addresses`, body);
+}
+
 API.updateUser = (userId, body) => {
   return API.instance.put(`admin/users/${userId}`, body);
 };
