@@ -83,10 +83,12 @@ const ApiTable = ({
 class WithdrawRequest extends Component {
   state = {
     data: [],
+    code: null, 
+    requestId: null,
     apiSecretShown: false,
     addressModalShown: false,
-    createNewAddressModalShown: false,
-    createNewAddressError: false,
+    approvalModalShown: false,
+    approvalError: false,
     page: 1,
     sizePerPage: 10,
     loading: false
@@ -128,55 +130,35 @@ class WithdrawRequest extends Component {
     }
   };
 
+  approveWithdrawRequest = () => {
+    const { code, requestId, page, sizePerPage } = this.state;
+    this.setState({ loading: true });
+    API.approveWithdrawRequest(requestId, { code }).then(response => {
+      this.setState({address: null})
+      if (response.status === 204) {
+        const newState = !this.state.approvalModalShown;
+        this.setState({ approvalModalShown: newState });
+        this.loadWithdrawRequest(page, sizePerPage);
+      } else {
+        this.setState({approvalError: true, approvalMessage: "Code is invalid"})
+      }
+    }).catch(e => {
+      this.setState({approvalError: true, approvalMessage: "Code is invalid"})
+      this.setState({
+        loading: false
+      })
+    });;
+  }
+
   createUserAddress = () => {
     const { user } = this.props;
     const { address, currency, page, sizePerPage } = this.state;
     const userId = path(["id"], user);
-    this.setState({ data: [], loading: true, createNewAddressModalShown: false });
+    this.setState({ data: [], loading: true, approvalModalShown: false });
     API.createUserAddress(userId, { address, currency }).then(response => {
       this.setState({address: null})
       if (response.status === 200) {
         this.loadUserAddress(page, sizePerPage);
-      }
-    }).catch(e => {
-      console.log(e);
-      this.setState({
-        loading: false
-      })
-    });;
-  };
-
-  deactivateUserApi = apiId => {
-    const { user } = this.props;
-    const { page, sizePerPage } = this.state;
-    const userId = path(["id"], user);
-    this.setState({ data: [], loading: true });
-    API.updateUserApi(userId, apiId, { isActive: false }).then(response => {
-      if (response.status === 204) {
-        this.loadUserApi(page, sizePerPage);
-      }
-    }).catch(e => {
-      console.log(e);
-      this.setState({
-        loading: false
-      })
-    });;
-  };
-
-  updateUserApi = () => {
-    const { id: userId } = this.props.user;
-    const { id: appId, apiName, page, sizePerPage } = this.state;
-    this.setState({ users: [], loading: true });
-    API.updateUserApi(userId, appId, {
-      apiName
-    }).then(response => {
-      if (response.status === 204) {
-        this.loadUserApi(page, sizePerPage);
-
-        this.setState({
-          id: null,
-          apiName: null,
-        });
       }
     }).catch(e => {
       console.log(e);
@@ -195,7 +177,8 @@ class WithdrawRequest extends Component {
   buttonFormatter = (cell, row) => {
     console.log("cell", cell);
     console.log("row", row);
-    const apiId = row.id;
+    const requestId = row.id;
+    const active = row.active
     return (
       <div className="avatar-group">
         <Button
@@ -203,72 +186,25 @@ class WithdrawRequest extends Component {
           size="sm"
           outline
           type="button"
-          onClick={() => this.deactivateUserApi(apiId)}
+          onClick={() => this.setState({approvalModalShown: true, requestId})}
+          disabled={active}
         >
-          <i className="fa fa-ban" aria-hidden="true"></i>
-        </Button>
-        <Button
-          color="default"
-          size="sm"
-          outline
-          type="button"
-          onClick={() => {
-            this.setState({ ...row, addressModalShown: true });
-          }}
-        >
-          <i className="fa fa-eye" aria-hidden="true"></i>
+          <i className="fa fa-check-circle" aria-hidden="true"></i>
         </Button>
       </div>
     );
   };
 
-  renderItem = api => {
-    return (
-      <tr key={api.apiKey}>
-        <th scope="row">{api.apiKey}</th>
-        <td className="budget">{api.createdBy}</td>
-        <td className="budget">{api.createdAt}</td>
-        <td>
-          <div className="avatar-group">
-            <Button
-              color="default"
-              size="sm"
-              outline
-              type="button"
-              onClick={e => {
-                e.preventDefault();
-                this.deactivateUserApi(api.id);
-              }}
-            >
-              Deactivate
-            </Button>
-            <Button
-              color="default"
-              size="sm"
-              outline
-              type="button"
-              onClick={() => {
-                this.setState({ ...api, addressModalShown: true });
-              }}
-            >
-              Edit
-            </Button>
-          </div>
-        </td>
-      </tr>
-    );
-  };
-
-  renderAddressInfoModal = () => {
-    const { address, currency, createdAt } = this.state;
+  renderApprovalModal = () => {
+    const { code, requestId, approvalError, approvalMessage } = this.state;
 
     return (
       <Modal
         className="modal-dialog-centered"
         size="lg"
-        isOpen={this.state.addressModalShown}
+        isOpen={this.state.approvalModalShown}
         toggle={() => {
-          this.setState({ addressModalShown: !this.state.addressModalShown });
+          this.setState({ approvalModalShown: !this.state.approvalModalShown });
         }}
       >
         <div className="modal-body p-0">
@@ -276,91 +212,19 @@ class WithdrawRequest extends Component {
             <CardBody>
               <Form>
                 <FormGroup>
-                  <label htmlFor="address">Address</label>
+                  <label htmlFor="code">Enter the code</label>
                   <Input
                     id="address"
                     type="text"
-                    value={address}
-                    disabled
-                  />
-                </FormGroup>
-                <FormGroup>
-                  <label htmlFor="currency">Currency</label>
-                  <Input id="currency" type="text" value={currency} disabled />
-                </FormGroup>
-                <FormGroup>
-                  <label htmlFor="createdAt">Created At</label>
-                  <Input
-                    id="createdAt"
-                    type="text"
-                    value={createdAt}
-                    disabled
-                  />
-                </FormGroup>
-              </Form>
-              <Button
-                color="primary"
-                type="button"
-                onClick={() => {
-                  const newState = !this.state.addressModalShown;
-                  this.setState({ addressModalShown: newState });
-                }}
-              >
-                Close
-              </Button>
-            </CardBody>
-          </Card>
-        </div>
-      </Modal>
-    );
-  };
-
-  renderCreateNewAddressModal = () => {
-    const { address, currency, createNewAddressError } = this.state;
-
-    return (
-      <Modal
-        className="modal-dialog-centered"
-        size="lg"
-        isOpen={this.state.createNewAddressModalShown}
-        toggle={() => {
-          this.setState({ createNewAddressModalShown: !this.state.createNewAddressModalShown });
-        }}
-      >
-        <div className="modal-body p-0">
-          <Card className="bg-secondary shadow border-0">
-            <CardBody>
-              <Form>
-                <FormGroup>
-                  <label htmlFor="address">Address</label>
-                  <Input
-                    id="address"
-                    type="text"
-                    value={address}
+                    value={code}
                     onChange={e => {
-                      this.setState({ createNewAddressError: false, address: e.target.value });
+                      this.setState({ approvalError: false, code: e.target.value });
                     }}
-                    invalid={createNewAddressError}
+                    invalid={approvalError}
                   />
 
-                  {createNewAddressError && (
-                    <FormFeedback>Address can't be empty</FormFeedback>
-                  )}
-                </FormGroup>
-                <FormGroup>
-                  <label htmlFor="address">Currency</label>
-                  <Input
-                    id="currency"
-                    type="text"
-                    value={currency}
-                    onChange={e => {
-                      this.setState({ createNewAddressError: false, currency: e.target.value });
-                    }}
-                    invalid={createNewAddressError}
-                  />
-
-                  {createNewAddressError && (
-                    <FormFeedback>Currency can't be empty</FormFeedback>
+                  {approvalError && (
+                    <FormFeedback>{approvalMessage}</FormFeedback>
                   )}
                 </FormGroup>
               </Form>
@@ -368,24 +232,30 @@ class WithdrawRequest extends Component {
                 color="primary"
                 type="button"
                 onClick={() => {
-                  if (!currency) {
-                    this.setState({createNewAddressError: true})
+                  if (!code) {
+                    this.setState({approvalError: true, approvalMessage: "Code can't be empty"})
                     return;
                   }
 
-                  if (!createNewAddressError) {
-                  this.createUserAddress();
-                    const newState = !this.state.createNewAddressModalShown;
-                    this.setState({ createNewAddressModalShown: newState });
+                  if (!approvalError) {
+                    this.approveWithdrawRequest(requestId);
                   }
                 }}
               >
-                Create new Address
+                Approve
               </Button>
             </CardBody>
           </Card>
         </div>
       </Modal>
+    );
+  };
+
+  approvalFormatter = (cell, row) => {
+    return (
+      <>
+        {cell ? 'Approved' : 'Not approve'}
+      </>
     );
   };
 
@@ -409,7 +279,7 @@ class WithdrawRequest extends Component {
                         color="primary"
                         id="tooltip443412080"
                         onClick={() => {
-                          this.setState({createNewAddressModalShown: true})
+                          this.setState({approvalModalShown: true})
                         }}
                       >
                         <span className="btn-inner--text">
@@ -449,8 +319,9 @@ class WithdrawRequest extends Component {
                       text: "Currency"
                     },
                     {
-                      dataField: "code",
-                      text: "Code"
+                      dataField: "active",
+                      text: "Approval",
+                      formatter: this.approvalFormatter
                     },
                     {
                       dataField: "actions",
@@ -470,8 +341,7 @@ class WithdrawRequest extends Component {
             </div>
           </Row>
 
-          {this.renderAddressInfoModal()}
-          {this.renderCreateNewAddressModal()}
+          {this.renderApprovalModal()}
         </Container>
       </>
     );

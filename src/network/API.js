@@ -77,6 +77,10 @@ API.getWithdrawRequest = (userId, query) => {
   return API.instance.get(`admin/users/${userId}/withdrawal_requests`, { params: query});
 }
 
+API.approveWithdrawRequest = (requestId, body) => {
+  return API.instance.post(`admin/withdrawal_requests/${requestId}/approve`, body);
+}
+
 API.updateUser = (userId, body) => {
   return API.instance.put(`admin/users/${userId}`, body);
 };
