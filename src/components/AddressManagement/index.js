@@ -146,45 +146,6 @@ class AddressManagement extends Component {
     });;
   };
 
-  deactivateUserApi = apiId => {
-    const { user } = this.props;
-    const { page, sizePerPage } = this.state;
-    const userId = path(["id"], user);
-    this.setState({ data: [], loading: true });
-    API.updateUserApi(userId, apiId, { isActive: false }).then(response => {
-      if (response.status === 204) {
-        this.loadUserApi(page, sizePerPage);
-      }
-    }).catch(e => {
-      console.log(e);
-      this.setState({
-        loading: false
-      })
-    });;
-  };
-
-  updateUserApi = () => {
-    const { id: userId } = this.props.user;
-    const { id: appId, apiName, page, sizePerPage } = this.state;
-    this.setState({ users: [], loading: true });
-    API.updateUserApi(userId, appId, {
-      apiName
-    }).then(response => {
-      if (response.status === 204) {
-        this.loadUserApi(page, sizePerPage);
-
-        this.setState({
-          id: null,
-          apiName: null,
-        });
-      }
-    }).catch(e => {
-      console.log(e);
-      this.setState({
-        loading: false
-      })
-    });;
-  };
 
   toggleModal = state => {
     this.setState({
@@ -203,15 +164,6 @@ class AddressManagement extends Component {
           size="sm"
           outline
           type="button"
-          onClick={() => this.deactivateUserApi(apiId)}
-        >
-          <i className="fa fa-ban" aria-hidden="true"></i>
-        </Button>
-        <Button
-          color="default"
-          size="sm"
-          outline
-          type="button"
           onClick={() => {
             this.setState({ ...row, addressModalShown: true });
           }}
@@ -222,42 +174,6 @@ class AddressManagement extends Component {
     );
   };
 
-  renderItem = api => {
-    return (
-      <tr key={api.apiKey}>
-        <th scope="row">{api.apiKey}</th>
-        <td className="budget">{api.createdBy}</td>
-        <td className="budget">{api.createdAt}</td>
-        <td>
-          <div className="avatar-group">
-            <Button
-              color="default"
-              size="sm"
-              outline
-              type="button"
-              onClick={e => {
-                e.preventDefault();
-                this.deactivateUserApi(api.id);
-              }}
-            >
-              Deactivate
-            </Button>
-            <Button
-              color="default"
-              size="sm"
-              outline
-              type="button"
-              onClick={() => {
-                this.setState({ ...api, addressModalShown: true });
-              }}
-            >
-              Edit
-            </Button>
-          </div>
-        </td>
-      </tr>
-    );
-  };
 
   renderAddressInfoModal = () => {
     const { address, currency, createdAt } = this.state;
@@ -413,7 +329,7 @@ class AddressManagement extends Component {
                         }}
                       >
                         <span className="btn-inner--text">
-                          Create a new API Key
+                          Create a new address
                         </span>
                       </Button>
                     </Col>
